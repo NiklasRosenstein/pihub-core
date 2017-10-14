@@ -3,6 +3,7 @@ This component installs a middleware for user authentication.
 """
 
 import flask
+import fnmatch
 import {Component} from './base'
 import {Middleware} from '../middleware'
 
@@ -24,9 +25,13 @@ def auth():
 
 class AuthMiddleware(Middleware):
 
+  def __init__(self):
+    self.exclude_from_auth = ['/auth']
+
   def before_request(self):
-    if flask.request.path == '/auth': # TODO!
-      return None
+    for pattern in self.exclude_from_auth:
+      if fnmatch.fnmatch(flask.request.path, pattern):
+        return None  # No auth required
     password = flask.session.get('password')
     if flask.g.pihub.config.auth['password'] != password:
       return flask.redirect(flask.url_for('@pihub/core:auth.auth'))
@@ -36,7 +41,8 @@ class AuthMiddleware(Middleware):
 class AuthComponent(Component):
 
   def init_component(self, app):
-    app.middlewares.append(AuthMiddleware())
+    self.middleware = AuthMiddleware()
+    app.middlewares.append(self.middleware)
     app.flask.register_blueprint(bp)
 
 
