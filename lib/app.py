@@ -16,7 +16,11 @@ class Application:
     self.config = config
     self.components = []
     self.middlewares = []
-    self.flask = flask.Flask('pihub-core')
+    self.flask = flask.Flask(
+      'pihub-core',
+      template_folder=str(module.directory.parent.joinpath('templates')),
+      static_folder=str(module.directory.parent.joinpath('static'))
+    )
     self.flask.before_first_request(self.__before_first_request)
     self.flask.before_request(self.__before_request)
     self.flask.after_request(self.__after_request)

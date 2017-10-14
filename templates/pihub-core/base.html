@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{page_title or "PiHub"}}</title>
+    {%block html_head%}
+    <link href="{{url_for('static', filename='pihub-core/style.css')}}" rel="stylesheet">
+    {%endblock html_head%}
+  </head>
+  <body>
+    {%block html_body%}
+    {%endblock html_body%}
+  </body>
+</html>
