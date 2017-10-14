@@ -61,3 +61,18 @@ class Application:
           comp.init_component(self)
         return comp
     return None
+
+  def get_component(self, comp_name, initialized=True):
+    """
+    Like #find_component(), but raises a #ComponentNotFoundError instead of
+    returning #None.
+    """
+
+    comp = self.find_component(comp_name, initialized)
+    if comp is None:
+      raise ComponentNotFoundError(comp_name)
+    return comp
+
+
+class ComponentNotFoundError(Exception):
+  pass
