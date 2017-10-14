@@ -1,4 +1,34 @@
 {%extends "pihub-core/base.html"%}
 {%block html_body%}
-  <h1>Welcome to PiHub!</h1>
+  <div class="ui fixed inverted menu">
+    <div class="header active item">PiHub</div>
+    <a class="item">Bar</a>
+    <a class="item">Baz</a>
+    <div class="ui dropdown item" tabindex="0">
+      Dropdown
+      <i class="dropdown icon"></i>
+      <div class="menu transition hidden" tabindex="-1">
+        <div class="item">Action</div>
+        <div class="item">Another Action</div>
+        <div class="item">Something else here</div>
+        <div class="divider"></div>
+        <div class="item">Separated Link</div>
+        <div class="divider"></div>
+        <div class="item">One more separated link</div>
+      </div>
+    </div>
+    <div class="right menu">
+      <div class="item">
+        <div class="ui transparent inverted icon input">
+          <i class="search icon"></i>
+          <input type="text" placeholder="Search">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui middle aligned center aligned grid">
+    <div class="column">
+      <h1>Welcome to PiHub!</h1>
+    </div>
+  </div>
 {%endblock html_body%}
