@@ -13,4 +13,5 @@ resolve_root = "lib/"
 Flask = ">=0.12.2"
 
 [pihub.components]
+auth = "./lib/components/auth"
 dashboard = "./lib/components/dashboard"

@@ -9,6 +9,9 @@ class Application:
   """
   The central object for the PiHub application. Exposes the Flask application
   object and an interface for registering middlewares.
+
+  The application object will always export itself under the name `pihub`
+  into the #flask.g object.
   """
 
   def __init__(self, config):
@@ -20,6 +23,7 @@ class Application:
       template_folder=str(module.directory.parent.joinpath('templates')),
       static_folder=str(module.directory.parent.joinpath('static'))
     )
+    self.flask.config['SECRET_KEY'] = config.secret_key
     self.flask.before_first_request(self.__before_first_request)
     self.flask.before_request(self.__before_request)
     self.flask.after_request(self.__after_request)
@@ -29,6 +33,7 @@ class Application:
       mw.before_first_request()
 
   def __before_request(self):
+    flask.g.pihub = self
     for mw in self.middlewares:
       result = mw.before_request()
       if result is not None:
