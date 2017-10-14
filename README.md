@@ -50,7 +50,7 @@ mycomponent = "./mycomponent"
 ```
 
 The full name of this component is then `my-pihub-extensions:mycomponent`
-which can be loaded using `@pihub/core/component:load_component(name)`.
+which can be loaded using `@pihub/core/components/base:load_component(name)`.
 Components specified in the PiHub configuration (`~/.pihub/config.py`) are
 automatically loaded when PiHub starts. The order in the components list is
 irrelevant.

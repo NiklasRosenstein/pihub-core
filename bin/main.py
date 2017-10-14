@@ -4,8 +4,8 @@ Starts the PiHub application.
 
 import argparse
 import {Application} from '../lib/app'
+import {load_component} from '../lib/components/base'
 import {install as install_werkzeug_patch} from '../lib/werkzeug-patch'
-import {load_component} from '../lib/component'
 import os
 
 parser = argparse.ArgumentParser()

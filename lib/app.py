@@ -3,7 +3,6 @@ The PiHub application class.
 """
 
 import flask
-import middleware from './middleware'
 
 
 class Application:
