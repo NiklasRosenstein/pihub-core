@@ -6,3 +6,7 @@ configuration file.
 debug = False
 port = 7442
 host = 'localhost'
+
+components = [
+  '@pihub/core:dashboard'
+]

@@ -3,8 +3,9 @@ Starts the PiHub application.
 """
 
 import argparse
-import app from '../lib/app'
+import {Application} from '../lib/app'
 import {install as install_werkzeug_patch} from '../lib/werkzeug-patch'
+import {load_component} from '../lib/component'
 import os
 
 parser = argparse.ArgumentParser()
@@ -46,8 +47,15 @@ def main(argv=None):
   if args.host:
     config.host = args.host
 
+  app = Application(config)
+
+  # Load configured components.
+  for comp in config.components:
+    app.components.append(load_component(comp))
+
   install_werkzeug_patch()
-  app.run(host=config.host, port=config.port, debug=config.debug)
+  app.init_components()
+  app.flask.run(host=config.host, port=config.port, debug=config.debug)
 
 
 if require.main == module:
