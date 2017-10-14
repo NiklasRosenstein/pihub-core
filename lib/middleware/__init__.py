@@ -1,3 +1,3 @@
 
 import {Middleware} from './base'
-import {PublishRequestObject} from './publish'
+import {PublishFlaskObject} from './publish'

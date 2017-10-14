@@ -51,5 +51,8 @@ class AuthComponent(Component):
     app.middlewares.append(self.middleware)
     app.flask.register_blueprint(bp)
 
+    dashboard = app.get_component('@pihub/core:dashboard')
+    dashboard.right_menu.append(dashboard.MenuItem('Sign Out', '/signout'))
+
 
 module.exports = AuthComponent

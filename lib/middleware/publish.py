@@ -3,9 +3,9 @@ import flask
 import {Middleware} from './base'
 
 
-class PublishRequestObject(Middleware):
+class PublishFlaskObject(Middleware):
   """
-  Publishes an object in `flask.request` before a request is handled.
+  Publishes an object in `flask.g` before a request is handled.
   """
 
   def __init__(self, name, obj):
@@ -13,4 +13,4 @@ class PublishRequestObject(Middleware):
     self.obj = obj
 
   def before_request(self):
-    setattr(flask.request, self.name, self.obj)
+    setattr(flask.g, self.name, self.obj)

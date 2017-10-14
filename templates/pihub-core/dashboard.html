@@ -1,9 +1,9 @@
 {%extends "pihub-core/base.html"%}
 {%block html_body%}
   <div class="ui fixed inverted menu">
-    <div class="header active item">PiHub</div>
-    <a class="item">Bar</a>
-    <a class="item">Baz</a>
+    {%for item in dashboard.left_menu%}
+    <a class="item" href="{{item.url}}">{{item.name}}</a>
+    {%endfor%}
     <div class="ui dropdown item" tabindex="0">
       Dropdown
       <i class="dropdown icon"></i>
@@ -24,6 +24,9 @@
           <input type="text" placeholder="Search">
         </div>
       </div>
+      {%for item in dashboard.right_menu%}
+      <a class="item" href="{{item.url}}">{{item.name}}</a>
+      {%endfor%}
     </div>
   </div>
   <div class="ui middle aligned center aligned grid">

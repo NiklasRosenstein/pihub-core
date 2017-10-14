@@ -12,22 +12,30 @@ The #flask.Blueprint object for the dashboard component.
 The #Dashboard instance that is currently in use to handle the request.
 """
 
+import collections
 import flask
 import base from './base'
-import middleware from '../middleware'
 
-bp = flask.Blueprint('@pihub/core:dashboard', '')
+NAME = '@pihub/core:dashboard'
+bp = flask.Blueprint(NAME, '')
 
 
 @bp.route('/')
 def dashboard():
-  return flask.render_template('pihub-core/dashboard.html')
+  dashboard = flask.g.pihub.find_component(NAME)
+  return flask.render_template('pihub-core/dashboard.html',
+    dashboard=dashboard)
 
 
 class Dashboard(base.Component):
 
+  MenuItem = collections.namedtuple('MenuItem', 'name url')
+
+  def __init__(self):
+    self.left_menu = [self.MenuItem('PiHub', '/')]
+    self.right_menu = []
+
   def init_component(self, app):
-    app.middlewares.append(middleware.PublishRequestObject('dashboard', self))
     app.flask.register_blueprint(bp)
 
 
