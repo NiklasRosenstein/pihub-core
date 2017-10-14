@@ -5,15 +5,9 @@ configuration file.
 
 import os
 
-debug = False
-port = 7442
-host = 'localhost'
-secret_key = os.getenv('PIHUB_SECRET_KEY', 'This Should definitely be replaced with something secure.')
-
-# Configuration of the @pihub/core:auth component.
-auth = {
-  'password': 'welcome'
-}
+# ============================================================================
+# Installed components configuration
+# ============================================================================
 
 components = [
   '@pihub/core:auth',
@@ -21,4 +15,34 @@ components = [
 ]
 
 component_hooks = {
+}
+
+# ============================================================================
+# Server configuration
+# ============================================================================
+
+# True if the Flask application should be run with the Werkzeug reloader and
+# exceptions should return the traceback in the HTML response.
+debug = False
+
+# The port for the HTTP application.
+port = 7442
+
+# The hostname to bind the HTTP server to.
+host = 'localhost'
+
+# The secret key for user sessions. This should always be overwritten by the
+# user using either the PIHUB_SECRET_KEY environment variable or in the user's
+# custom PiHub configuration!
+# Check out the WordPress secret key generator if you're unsure what to
+# put here.
+#     https://api.wordpress.org/secret-key/1.1/salt/
+secret_key = os.getenv('PIHUB_SECRET_KEY', 'Update This!')
+
+# ============================================================================
+# @pihub/core:auth Component configuration
+# ============================================================================
+
+pihub_core_auth = {
+  'password': 'welcome'
 }

@@ -15,7 +15,7 @@ def auth():
   if flask.request.method == 'POST':
     password = flask.request.form.get('password')
     flask.session['password'] = password
-    if flask.g.pihub.config.auth['password'] == password:
+    if flask.g.pihub.config.pihub_core_auth['password'] == password:
       return flask.redirect(flask.url_for('@pihub/core:dashboard.dashboard'))
     error = 'Wrong password.'
   else:
@@ -33,7 +33,7 @@ class AuthMiddleware(Middleware):
       if fnmatch.fnmatch(flask.request.path, pattern):
         return None  # No auth required
     password = flask.session.get('password')
-    if flask.g.pihub.config.auth['password'] != password:
+    if flask.g.pihub.config.pihub_core_auth['password'] != password:
       return flask.redirect(flask.url_for('@pihub/core:auth.auth'))
     return None
 
