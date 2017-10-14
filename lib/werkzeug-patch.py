@@ -47,7 +47,8 @@ def install():
   @monkey_patch(_reloader, '_get_args_for_reloading')
   def _get_args_for_reloading(__old):
     args = __old()
-    args[0:1] = nodepy.runtime.exec_args
+    if not nodepy.runtime.script:
+      args[0:1] = nodepy.runtime.exec_args
     return args
 
   _installed = True

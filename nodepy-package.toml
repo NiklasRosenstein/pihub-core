@@ -6,5 +6,8 @@ resolve_root = "lib/"
 [authors]
 "Niklas Rosenstein" = { email = "rosensteinniklas@gmail.com" }
 
+[bin]
+"pihub" = "./bin/main"
+
 [dependencies.python]
 Flask = ">=0.12.2"
