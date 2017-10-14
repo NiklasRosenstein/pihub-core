@@ -11,4 +11,4 @@ class Middleware:
     pass
 
   def after_request(self, response):
-    pass
+    return response
