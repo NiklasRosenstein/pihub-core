@@ -61,3 +61,19 @@ components = [
   'my-pihub-extension:mycomponent'
 ]
 ```
+
+## Replacing Components
+
+Components can be replaced by injecting an alternative class into the
+configuration's `component_hooks` dictionary. The `load_component()`
+function will check this dictionary first before resolving the component
+name further.
+
+> **Important**: When the replaced component is required by other components,
+> it must replicate the public interface of the original component!
+
+```python
+component_hooks = {
+  '@pihub/core:dashboard': require('my-dashboard').MyDashboardClass
+}
+```

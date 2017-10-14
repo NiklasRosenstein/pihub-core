@@ -24,7 +24,7 @@ class Component:
     pass
 
 
-def load_component(name):
+def load_component(name, hooks=None):
   """
   Loads a PiHub component by name and returns a new instance of it. The *name*
   must be of the format `package:component` where `package` is a Node.py
@@ -35,16 +35,22 @@ def load_component(name):
   associated with it, the specified *name* will be assigned to it.
   """
 
-  package_name, _, comp_name = name.partition(':')
-  package = require(package_name, exports=False).package
+  if hooks is not None and name in hooks:
+    comp = hooks[name]
+    if isinstance(comp, type):
+      comp = comp()
+  else:
+    package_name, _, comp_name = name.partition(':')
+    package = require(package_name, exports=False).package
 
-  if 'pihub' not in package.payload or 'components' not in package.payload['pihub']:
-    raise RuntimeError('package {!r} has no pihub.components configuration'.format(package_name))
-  if comp_name not in package.payload['pihub']['components']:
-    raise RuntimeError('package {!r} has no component {!r}'.format(package_name, comp_name))
+    if 'pihub' not in package.payload or 'components' not in package.payload['pihub']:
+      raise RuntimeError('package {!r} has no pihub.components configuration'.format(package_name))
+    if comp_name not in package.payload['pihub']['components']:
+      raise RuntimeError('package {!r} has no component {!r}'.format(package_name, comp_name))
 
-  module_name = package.payload['pihub']['components'][comp_name]
-  comp = package.require(module_name)()
+    module_name = package.payload['pihub']['components'][comp_name]
+    comp = package.require(module_name)()
+
   if not comp.name:
     comp.name = name
   return comp

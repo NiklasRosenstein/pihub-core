@@ -51,7 +51,7 @@ def main(argv=None):
 
   # Load configured components.
   for comp in config.components:
-    app.components.append(load_component(comp))
+    app.components.append(load_component(comp, config.component_hooks))
 
   install_werkzeug_patch()
   app.init_components()

@@ -10,3 +10,6 @@ host = 'localhost'
 components = [
   '@pihub/core:dashboard'
 ]
+
+component_hooks = {
+}
