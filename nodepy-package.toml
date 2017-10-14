@@ -1,0 +1,10 @@
+[package]
+name = "@pihub/core"
+version = "1.0.0"
+resolve_root = "lib/"
+
+[authors]
+"Niklas Rosenstein" = { email = "rosensteinniklas@gmail.com" }
+
+[dependencies.python]
+Flask = ">=0.12.2"
