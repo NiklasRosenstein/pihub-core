@@ -23,6 +23,12 @@ def auth():
   return flask.render_template('pihub-core/auth.html', error=error)
 
 
+@bp.route('/signout', methods=['GET'])
+def signout():
+  flask.session.pop('password')
+  return flask.redirect(flask.url_for('@pihub/core:auth.auth'))
+
+
 class AuthMiddleware(Middleware):
 
   def __init__(self):
