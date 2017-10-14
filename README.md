@@ -1,3 +1,5 @@
+<img src="static/pihub-core/logo.png" align="right">
+
 # PiHub
 
 Component based framework for creating customizable applications. Delivers a
