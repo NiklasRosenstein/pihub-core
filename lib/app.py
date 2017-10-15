@@ -49,8 +49,9 @@ class Application:
   def upgrade_database_revisions(self):
     for comp in self.components:
       rev = db.ComponentDatabaseRevision.get(comp.name)
-      num = comp.get_database_revision_number()
-      if rev and rev.num != num:
+      history = comp.get_database_revisions()
+      if history is not None and history.max_revisions() != rev.num:
+        print('Upgrading component:', comp.name)
         migrate(db.db, comp.get_database_revision_history(), rev.num, num)
       db.ComponentDatabaseRevision.set(comp.name, num)
 
@@ -59,8 +60,8 @@ class Application:
     ok = True
     for comp in self.components:
       rev = db.ComponentDatabaseRevision.get(name=comp.name)
-      num = comp.get_database_revision_number()
-      if rev and rev.num != num:
+      history = comp.get_database_revisions()
+      if history is not None and history.max_revisions() != rev.num:
         ok = False
         print('error: component {!r} database revision is not up to date '
               '({} is not {})'.format(rev.num, num))

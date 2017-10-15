@@ -40,11 +40,22 @@ def signout():
   return flask.redirect(flask.url_for('@pihub/core:auth.auth'))
 
 
+class AuthRevisionHistory(db.RevisionHistory):
+
+  def rev_0001(self, db):
+    db.execute("""
+      ALTER TABLE pihub_core_auth_token
+      ADD remote_addr TEXT NOT NULL
+      DEFAULT ''
+    """)
+
+
 class AuthToken(db.Entity):
   _table_ = "pihub_core_auth_token"
 
   token = db.PrimaryKey(str)
   expires_on = db.Optional(datetime.datetime)
+  #remote_addr = db.Required(str)
 
   def __init__(self, token=None, expires_on=None):
     if token is None:
@@ -90,6 +101,9 @@ class AuthComponent(Component):
 
     dashboard = app.get_component('@pihub/core:dashboard')
     dashboard.right_menu.append(dashboard.MenuItem('Sign Out', '/signout'))
+
+  def get_database_revisions(self):
+    return None # return AuthRevisionHistory()
 
 
 module.exports = AuthComponent

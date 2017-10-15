@@ -2,6 +2,7 @@
 Tool for executing database migrations.
 """
 
+from pony.orm import db_session
 import os
 
 
@@ -73,4 +74,5 @@ def migrate(db, history, current_revision, target_revision, dry=False):
     raise ValueError('target_revision exceeds history.max_revision()')
 
   for num in range(current_revision, target_revision + 1):
-    history.execute_revision(index, db)
+    with db_session():
+      history.execute_revision(index, db)
