@@ -32,7 +32,7 @@ def signout():
 class AuthMiddleware(Middleware):
 
   def __init__(self):
-    self.exclude_from_auth = ['/auth']
+    self.exclude_from_auth = ['/auth', '/static/*']
 
   def before_request(self):
     for pattern in self.exclude_from_auth:
