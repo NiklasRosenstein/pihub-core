@@ -7,10 +7,11 @@ resolve_root = "lib/"
 "Niklas Rosenstein" = { email = "rosensteinniklas@gmail.com" }
 
 [bin]
-"pihub" = "./bin/main"
+pihub = "./bin/main"
 
 [dependencies.python]
 Flask = ">=0.12.2"
+pony = ">=0.7.2"
 
 [pihub.components]
 auth = "./lib/components/auth"

@@ -39,6 +39,14 @@ host = 'localhost'
 #     https://api.wordpress.org/secret-key/1.1/salt/
 secret_key = os.getenv('PIHUB_SECRET_KEY', 'Update This!')
 
+# The PiHub database configuration. Defaults to SQLite in your PiHub
+# configuration directory.
+database = {
+  'provider': 'sqlite',
+  'filename': os.path.expanduser('~/.pihub/pihub.sqlite'),
+  'create_db': True
+}
+
 # ============================================================================
 # @pihub/core:auth Component configuration
 # ============================================================================

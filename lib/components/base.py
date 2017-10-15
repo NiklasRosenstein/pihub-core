@@ -23,6 +23,25 @@ class Component:
 
     pass
 
+  def get_database_revision_number(self):
+    """
+    Return the revision number of the Component. This revision number should
+    only be increased if the database model has changed since a previous
+    version.
+    """
+
+    return 0
+
+  def get_database_revision_history(self):
+    """
+    Return the revision history for this component's database elements. When
+    the component is loaded and the component's database revision does not
+    match its current revision, the revision history will be used to upgrade
+    the database.
+    """
+
+    return None
+
 
 def load_component(name, hooks=None):
   """

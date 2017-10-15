@@ -3,6 +3,7 @@ The PiHub application class.
 """
 
 import flask
+import db from './database'
 
 
 class Application:
@@ -44,10 +45,34 @@ class Application:
       response = mw.after_request(response)
     return response
 
+  @db.session
+  def upgrade_database_revisions(self):
+    for comp in self.components:
+      rev = db.ComponentDatabaseRevision.get(comp.name)
+      num = comp.get_database_revision_number()
+      if rev and rev.num != num:
+        migrate(db.db, comp.get_database_revision_history(), rev.num, num)
+      db.ComponentDatabaseRevision.set(comp.name, num)
+
+  @db.session
+  def check_database_revisions(self):
+    ok = True
+    for comp in self.components:
+      rev = db.ComponentDatabaseRevision.get(name=comp.name)
+      num = comp.get_database_revision_number()
+      if rev and rev.num != num:
+        ok = False
+        print('error: component {!r} database revision is not up to date '
+              '({} is not {})'.format(rev.num, num))
+    return ok
+
+  @db.session
   def init_components(self):
     """
     Should be called before the application is started, otherwise components
     will not have a chance to register routes to the Flask application.
+
+    This function will also execute any outstanding database upgrades.
     """
 
     for comp in self.components:
