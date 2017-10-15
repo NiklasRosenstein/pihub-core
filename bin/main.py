@@ -4,7 +4,7 @@ Starts the PiHub application.
 
 import argparse
 import {Application} from '../lib/app'
-import {load_component} from '../lib/components/base'
+import {load_component} from '../lib/component'
 import {install as install_werkzeug_patch} from '../lib/werkzeug-patch'
 import db from '../lib/database'
 import {migrate} from '../lib/database/migrate'

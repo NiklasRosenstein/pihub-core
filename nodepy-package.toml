@@ -14,5 +14,5 @@ Flask = ">=0.12.2"
 pony = ">=0.7.2"
 
 [pihub.components]
-auth = "./lib/components/auth"
-dashboard = "./lib/components/dashboard"
+auth = "./components/auth"
+dashboard = "./components/dashboard"

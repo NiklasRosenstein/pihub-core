@@ -5,68 +5,7 @@ Tool for executing database migrations.
 import os
 
 
-class MigrationError(Exception):
-  pass
-
-
-class Migrator(object):
-
-  def __init__(self, db, dry=False):
-    if target_revision < current_revision:
-      raise ValueError('target_revision must be >= current_revision')
-    self.db = db
-    self.dry = dry
-
-  def _check_collection(self, collection):
-    if collection not in self.db.collection_names():
-      print('    warning: Database has no collection "{}"'.format(collection))
-
-  def add_field(self, collection, field, value):
-    """
-    Adds a field to a collection with the specified default value if the
-    field does not already exist.
-    """
-    print('  Adding field "{}" to collection "{}" with value "{}"'.format(
-        field, collection, value))
-    self._check_collection(collection)
-    if self.dry:
-      print('    Skipped (dry run)')
-    else:
-      result = self.db[collection].update({}, {'$set': {field: value}})
-      print('    {}'.format(result))
-
-  def delete_field(self, collection, field):
-    """
-    Removes a field from all documents in a collection.
-    """
-
-    print('  Deleting field "{}" of collection "{}"'.format(field, collection))
-    self._check_collection(collection)
-    if self.dry:
-      print('    Skipped (dry run)')
-    else:
-      result = self.db[collection].update({}, {'$unset': {field: 1}})
-      print('    {}'.format(result))
-
-  def update_collection(self, collection):
-    """
-    Decorator for a function that will be for all documents in the
-    specified *collection*.
-    """
-
-    def decorator(func):
-      print('  Updating collection "{}" with {}()'.format(collection, func.__name__))
-      self._check_collection(collection)
-      for obj in self.db[collection].find({}):
-        func(obj)
-        if not self.dry:
-          self.db[collection].save(obj)
-      if self.dry:
-        print('    Objects not saved (dry run)')
-    return decorator
-
-
-class RevisionHistory(object):
+class BaseRevisionHistory(object):
   """
   Abstract class for providing a database migration history.
   """
@@ -74,11 +13,11 @@ class RevisionHistory(object):
   def max_revision(self):
     raise NotImplementedError
 
-  def execute_revision(self, migrator, index):
+  def execute_revision(self, index, db):
     raise NotImplementedError
 
 
-class DirectoryRevsionHistory(RevisionHistory):
+class DirectoryRevsionHistory(BaseRevisionHistory):
 
   def __init__(self, directory):
     self.directory = directory
@@ -94,15 +33,15 @@ class DirectoryRevsionHistory(RevisionHistory):
   def max_revision(self):
     return len(self.revisions)
 
-  def execute_revision(self, migrator, index):
+  def execute_revision(self, index, db):
     filename = os.path.join(self.directory, self.revisions[index])
     with open(filename, 'r') as fp:
       code = compile(fp.read(), filename, 'exec')
-    scope = {'__file__': filename, 'migrator': self}
+    scope = {'__file__': filename, 'db': db}
     exec(code, scope)
 
 
-class RevisionBoard(RevisionHistory):
+class RevisionHistory(BaseRevisionHistory):
 
   def __init__(self):
     self._revisions = []
@@ -119,8 +58,8 @@ class RevisionBoard(RevisionHistory):
   def max_revision(self):
     return self._max_revision
 
-  def execute_revision(self, migrator, index):
-    getattr(self, self._revisions[index])(migrator, index)
+  def execute_revision(self, index, db):
+    getattr(self, self._revisions[index])(db)
 
 
 def migrate(db, history, current_revision, target_revision, dry=False):
@@ -133,6 +72,5 @@ def migrate(db, history, current_revision, target_revision, dry=False):
   if target_revision > history.max_revision():
     raise ValueError('target_revision exceeds history.max_revision()')
 
-  migrate = Migrator(db, dry=dry)
   for num in range(current_revision, target_revision + 1):
-    history.execute_revision(migrate, index)
+    history.execute_revision(index, db)

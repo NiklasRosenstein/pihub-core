@@ -5,7 +5,7 @@ Interface for PiHub's database connection with Pony ORM.
 from pony.orm import *
 from pony.orm import db_session as session
 from pony.orm.core import EntityMeta
-import {RevisionBoard} from './migrate'
+import {RevisionHistory} from './migrate'
 
 db = Database()
 Entity = db.Entity

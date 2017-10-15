@@ -8,9 +8,9 @@ import datetime
 import flask
 import fnmatch
 import uuid
-import {Component} from './base'
-import db from '../database'
-import {Middleware} from '../middleware'
+import db from '../lib/database'
+import {Component} from '../lib/component'
+import {Middleware} from '../lib/middleware'
 
 bp = flask.Blueprint('@pihub/core:auth', '')
 

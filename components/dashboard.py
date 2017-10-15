@@ -14,7 +14,7 @@ The #Dashboard instance that is currently in use to handle the request.
 
 import collections
 import flask
-import base from './base'
+import base from '../lib/component'
 
 NAME = '@pihub/core:dashboard'
 bp = flask.Blueprint(NAME, '')
