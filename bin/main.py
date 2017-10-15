@@ -2,7 +2,10 @@
 Starts the PiHub application.
 """
 
+__version__ = module.package.payload['package']['version']
+
 import argparse
+import code
 import {Application} from '../lib/app'
 import {load_component} from '../lib/component'
 import {install as install_werkzeug_patch} from '../lib/werkzeug-patch'
@@ -22,6 +25,8 @@ parser.add_argument('-H', '--host', help='The hostname to bind the server '
   'to. Defaults to localhost')
 parser.add_argument('--upgrade', help='Upgrade any outdated database '
   'schemas and exit.', action='store_true')
+parser.add_argument('--dbshell', help='Enter an interactive shell with '
+  'access to the Pony ORM database object.', action='store_true')
 
 
 def main(argv=None):
@@ -57,6 +62,10 @@ def main(argv=None):
   db.db.bind(**config.database)
   db.db.generate_mapping(create_tables=True)
 
+  if args.dbshell:
+    with db.session():
+      code.interact('PiHub {} DB Shell'.format(__version__), local={'db': db.db})
+    return 0
   if args.upgrade:
     app.upgrade_database_revisions()
     return 0
