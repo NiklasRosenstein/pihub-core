@@ -47,6 +47,9 @@ database = {
   'create_db': True
 }
 
+# Number of worker threads for event processing.
+num_event_processors = 10
+
 # ============================================================================
 # @pihub/core:auth Component configuration
 # ============================================================================

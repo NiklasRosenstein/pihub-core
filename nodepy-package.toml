@@ -12,6 +12,7 @@ pihub = "./bin/main"
 [dependencies.python]
 Flask = ">=0.12.2"
 pony = ">=0.7.2"
+APScheduler = ">=3.3.1"
 
 [pihub.components]
 auth = "./components/auth"

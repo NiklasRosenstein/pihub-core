@@ -2,6 +2,8 @@
 The PiHub application class.
 """
 
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.executors.pool import ThreadPoolExecutor
 import flask
 import db from './database'
 
@@ -28,6 +30,8 @@ class Application:
     self.flask.before_first_request(self.__before_first_request)
     self.flask.before_request(self.__before_request)
     self.flask.after_request(self.__after_request)
+    self.scheduler = BackgroundScheduler(
+      executors={'default': ThreadPoolExecutor(config.num_event_processors)})
 
   def __before_first_request(self):
     for mw in self.middlewares:

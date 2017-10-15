@@ -74,7 +74,10 @@ def main(argv=None):
     print('       try using the pihub --upgrade command.')
     return 1
 
-  app.init_components()
+  if not config.debug or os.getenv('WERKZEUG_RUN_MAIN', '') == 'true':
+    # We don't want to run the job scheduler twice, really.
+    app.scheduler.start()
+    app.init_components()
 
   install_werkzeug_patch()
   app.flask.run(host=config.host, port=config.port, debug=config.debug)
