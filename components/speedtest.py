@@ -26,6 +26,7 @@ from apscheduler.triggers import interval, cron
 from plotly.tools import make_subplots
 from plotly.offline import plot
 from plotly.graph_objs import Scattergl
+import dateutil.tz
 import datetime
 import pyspeedtest
 import {Component} from '@pihub/core/component'
@@ -52,6 +53,7 @@ class SpeedtestRecording(db.Entity):
 class Speedtest(Component, Dashboard.Section):
 
   def init_component(self, app):
+    self.timezone = app.config.timezone
     self.config = getattr(app.config, 'speedtest', default_config)
     if 'trigger' in self.config:
       trigger = config['trigger']
@@ -83,10 +85,13 @@ class Speedtest(Component, Dashboard.Section):
     if not self.config.get('show_in_dashboard', True):
       return None
     records = list(SpeedtestRecording.select())
+    tzutc = dateutil.tz.tzutc()
+    tznow = dateutil.tz.gettz(self.timezone)
+    dates = [r.date_start.replace(tzinfo=tzutc).astimezone(tznow) for r in records]
     fig = make_subplots(rows=1, cols=2, print_grid=False)
     fig.append_trace(
       Scattergl(
-        x = [r.date_start for r in records],
+        x = dates,
         y = [r.down for r in records],
         name = 'Download'
       ),
@@ -94,7 +99,7 @@ class Speedtest(Component, Dashboard.Section):
     )
     fig.append_trace(
       Scattergl(
-        x = [r.date_start for r in records],
+        x = dates,
         y = [r.up for r in records],
         name = 'Upload'
       ),
@@ -102,7 +107,7 @@ class Speedtest(Component, Dashboard.Section):
     )
     fig.append_trace(
       Scattergl(
-        x = [r.date_start for r in records],
+        x = dates,
         y = [r.ping for r in records],
         name = 'Ping'
       ),

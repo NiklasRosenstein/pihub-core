@@ -51,6 +51,9 @@ database = {
 # Number of worker threads for event processing.
 num_event_processors = 10
 
+# User timezone information.
+timezone = 'Europe/Berlin'
+
 # ============================================================================
 # @pihub/core:auth Component configuration
 # ============================================================================
