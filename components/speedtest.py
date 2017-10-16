@@ -14,7 +14,8 @@ In a dictionary named `speedtest`:
 
 `cron`:
   A dictionary as keyword arguments for the #apscheduler.triggers.cron
-  trigger type.
+  trigger type. If nothing is configured, the Cron trigger will be used
+  executing every hour.
 
 `show_in_dashboard`:
   Show the collected speedtest data on the dashboard. Requires the
@@ -32,7 +33,7 @@ import db from '@pihub/core/database'
 import Dashboard from '@pihub/core/../components/dashboard'
 
 default_config = {
-  'cron': {'minute': '*'},
+  'cron': {'hour': '*'},
   'show_in_dashboard': True
 }
 
@@ -51,24 +52,23 @@ class SpeedtestRecording(db.Entity):
 class Speedtest(Component, Dashboard.Section):
 
   def init_component(self, app):
-    config = getattr(app.config, 'speedtest', default_config)
-    if 'trigger' in config:
+    self.config = getattr(app.config, 'speedtest', default_config)
+    if 'trigger' in self.config:
       trigger = config['trigger']
-    elif 'interval' in config:
-      trigger = interval.IntervalTrigger(**config['interval'])
-    elif 'cron' in config:
-      trigger = cron.CronTrigger(**config['cron'])
+    elif 'interval' in self.config:
+      trigger = interval.IntervalTrigger(**self.config['interval'])
+    elif 'cron' in self.config:
+      trigger = cron.CronTrigger(**self.config['cron'])
     else:
       raise ValueError('config.speedtest missing trigger information')
 
     app.scheduler.add_job(self.perform_speedtest, trigger)
 
-    if config.get('show_in_dashboard'):
+    if self.config.get('show_in_dashboard'):
       dashboard = app.get_component('@pihub/core:dashboard')
       dashboard.sections.append(self)
 
   def perform_speedtest(self):
-    print('note: speedtest event.')
     begin = datetime.datetime.utcnow()
     st = pyspeedtest.SpeedTest()
     ping = st.ping()
@@ -80,6 +80,8 @@ class Speedtest(Component, Dashboard.Section):
 
   @db.session
   def render_dashboard_section(self):
+    if not self.config.get('show_in_dashboard', True):
+      return None
     records = list(SpeedtestRecording.select())
     fig = make_subplots(rows=1, cols=2, print_grid=False)
     fig.append_trace(
