@@ -35,7 +35,7 @@ import db from '@pihub/core/database'
 import Dashboard from '@pihub/core/../components/dashboard'
 
 default_config = {
-  'cron': {'hour': '*'},
+  'cron': {'minute': '*/15'},
   'show_in_dashboard': True
 }
 
