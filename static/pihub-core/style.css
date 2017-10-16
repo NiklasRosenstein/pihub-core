@@ -1,0 +1,11 @@
+#dashboard-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+#dashboard-wrapper > .toc {
+  width: 260px;
+}
+#dashboard-wrapper > .article {
+  flex: 1;
+  padding: 1em;
+}

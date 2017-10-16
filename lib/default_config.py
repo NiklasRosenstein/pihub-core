@@ -11,7 +11,8 @@ import os
 
 components = [
   '@pihub/core:auth',
-  '@pihub/core:dashboard'
+  '@pihub/core:dashboard',
+  '@pihub/core:speedtest'
 ]
 
 component_hooks = {

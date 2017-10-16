@@ -11,6 +11,7 @@ import uuid
 import db from '../lib/database'
 import {Component} from '../lib/component'
 import {Middleware} from '../lib/middleware'
+import Dashboard from './dashboard'
 
 bp = flask.Blueprint('@pihub/core:auth', '')
 
@@ -92,7 +93,7 @@ class AuthMiddleware(Middleware):
     return None
 
 
-class AuthComponent(Component):
+class AuthComponent(Component, Dashboard.Section):
 
   def init_component(self, app):
     self.middleware = AuthMiddleware()
@@ -100,10 +101,13 @@ class AuthComponent(Component):
     app.flask.register_blueprint(bp)
 
     dashboard = app.get_component('@pihub/core:dashboard')
-    dashboard.right_menu.append(dashboard.MenuItem('Sign Out', '/signout'))
+    dashboard.sections.append(self)
 
   def get_database_revisions(self):
     return None # return AuthRevisionHistory()
+
+  def extend_dashboard_menu(self, left, right):
+    right.append(Dashboard.MenuItem('Sign Out', '/signout', icon='sign out'))
 
 
 module.exports = AuthComponent

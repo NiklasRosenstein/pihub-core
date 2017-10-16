@@ -13,7 +13,10 @@ pihub = "./bin/main"
 Flask = ">=0.12.2"
 pony = ">=0.7.2"
 APScheduler = ">=3.3.1"
+pyspeedtest = ">=1.2.7"
+plotly = ">=2.1.0"
 
 [pihub.components]
 auth = "./components/auth"
 dashboard = "./components/dashboard"
+speedtest = "./components/speedtest"
