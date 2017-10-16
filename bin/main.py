@@ -34,6 +34,11 @@ def main(argv=None):
   if not args.config:
     args.config = os.path.expanduser('~/.pihub/config.py')
 
+  conf_dir = os.path.expanduser('~/.pihub')
+  if not os.path.exists(conf_dir):
+    print('note: creating empty configuration directory ~/.pihub')
+    os.makedirs(conf_dir)
+
   # Load the configuration.
   default_config = require('../lib/default_config', exports=False)
   if os.path.isfile(args.config):
