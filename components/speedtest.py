@@ -53,7 +53,6 @@ class SpeedtestRecording(db.Entity):
 class Speedtest(Component, Dashboard.Section):
 
   def init_component(self, app):
-    self.timezone = app.config.timezone
     self.config = getattr(app.config, 'speedtest', default_config)
     if 'trigger' in self.config:
       trigger = config['trigger']
@@ -86,7 +85,7 @@ class Speedtest(Component, Dashboard.Section):
       return None
     records = list(SpeedtestRecording.select())
     tzutc = dateutil.tz.tzutc()
-    tznow = dateutil.tz.gettz(self.timezone)
+    tznow = dateutil.tz.gettz(self.app.config.timezone)
     dates = [r.date_start.replace(tzinfo=tzutc).astimezone(tznow) for r in records]
     fig = make_subplots(rows=1, cols=2, print_grid=False)
     fig.append_trace(

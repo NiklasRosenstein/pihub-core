@@ -82,8 +82,10 @@ class Application:
 
     for comp in self.components:
       if not comp.initialized:
+        comp.app = None
         comp.initialized = True
         comp.init_component(self)
+      comp.app = self
 
   def find_component(self, comp_name, initialize=True):
     """

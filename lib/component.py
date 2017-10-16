@@ -12,6 +12,7 @@ class Component:
   #init_component() method is called.
   """
 
+  app = None
   name = None
   initialized = False
 
