@@ -61,14 +61,3 @@ timezone = 'Europe/Berlin'
 pihub_core_auth = {
   'password': 'welcome'
 }
-
-# ============================================================================
-# @pihub/core:rss_feeds Component configuration
-# ============================================================================
-
-rss_feeds = [
-  {
-    'url': 'https://pypi.python.org/pypi?%3Aaction=rss',
-    'update_interval': {'minutes': 5}
-  }
-]

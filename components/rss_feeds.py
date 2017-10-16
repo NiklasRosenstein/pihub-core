@@ -9,8 +9,8 @@ the Rss URL and update interval.
 ```python
 rss_feeds = [
   {
-    'url': 'https://www.mvg.de/Tickerrss/CreateRssClass',
-    'update_interval': {'minutes': 10}
+    'url': 'https://pypi.python.org/pypi?%3Aaction=rss',
+    'update_interval': {'minutes': 5}
   }
 ]
 ```
@@ -23,6 +23,13 @@ import flask
 import threading
 import {Component} from '@pihub/core/component'
 import {Dashboard} from '@pihub/core/../components/dashboard'
+
+default_config = [
+  {
+    'url': 'https://pypi.python.org/pypi?%3Aaction=rss',
+    'update_interval': {'minutes': 5}
+  }
+]
 
 
 class RssFeeds(Component):
@@ -41,7 +48,7 @@ class RssFeeds(Component):
 
     self._lock = threading.RLock()
     self._feeds = {}
-    for feed in getattr(app.config, 'rss_feeds', []):
+    for feed in getattr(app.config, 'rss_feeds', default_config):
       feed['section'] = self.RssSection()
       trigger = interval.IntervalTrigger(**feed['update_interval'])
       app.scheduler.add_job(partial(self.update, feed), trigger)
