@@ -34,10 +34,7 @@
         {%for section in dashboard.sections%}
           {%set content = section.render_dashboard_section()%}
           {%if content%}
-          <div class="ui segment">
-            <h4 class="ui header">Speedtest</h4>
-            <p>{{content|safe}}</p>
-          </div>
+            {{content|safe}}
           {%endif%}
         {%endfor%}
       {%endif%}

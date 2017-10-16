@@ -16,8 +16,10 @@ APScheduler = ">=3.3.1"
 pyspeedtest = ">=1.2.7"
 plotly = ">=2.1.0"
 python-dateutil = ">=2.6.1"
+feedparser = ">=5.2.1"
 
 [pihub.components]
 auth = "./components/auth"
 dashboard = "./components/dashboard"
 speedtest = "./components/speedtest"
+rss_feeds = "./components/rss_feeds"

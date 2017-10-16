@@ -1,0 +1,8 @@
+<div class="ui segment">
+  {%if title%}
+  <h4 class="ui header">{{title}}</h4>
+  {%endif%}
+  {%block content%}
+    {{content|safe}}
+  {%endblock content%}
+</div>

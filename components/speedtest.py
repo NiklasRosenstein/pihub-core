@@ -28,6 +28,7 @@ from plotly.offline import plot
 from plotly.graph_objs import Scattergl
 import dateutil.tz
 import datetime
+import flask
 import pyspeedtest
 import {Component} from '@pihub/core/component'
 import db from '@pihub/core/database'
@@ -112,7 +113,8 @@ class Speedtest(Component, Dashboard.Section):
       ),
       1, 2
     )
-    return plot(fig, output_type='div')
+    return flask.render_template('pihub-core/dashboard-section.html',
+      title='Speedtest', content=plot(fig, output_type='div'))
 
 
 module.exports = Speedtest

@@ -13,7 +13,8 @@ import uuid
 components = [
   '@pihub/core:auth',
   '@pihub/core:dashboard',
-  '@pihub/core:speedtest'
+  '@pihub/core:speedtest',
+  '@pihub/core:rss_feeds'
 ]
 
 component_hooks = {
@@ -60,3 +61,14 @@ timezone = 'Europe/Berlin'
 pihub_core_auth = {
   'password': 'welcome'
 }
+
+# ============================================================================
+# @pihub/core:rss_feeds Component configuration
+# ============================================================================
+
+rss_feeds = [
+  {
+    'url': 'https://pypi.python.org/pypi?%3Aaction=rss',
+    'update_interval': {'minutes': 5}
+  }
+]
