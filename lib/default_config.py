@@ -4,6 +4,7 @@ configuration file.
 """
 
 import os
+import uuid
 
 # ============================================================================
 # Installed components configuration
@@ -32,13 +33,11 @@ port = 7442
 # The hostname to bind the HTTP server to.
 host = 'localhost'
 
-# The secret key for user sessions. This should always be overwritten by the
-# user using either the PIHUB_SECRET_KEY environment variable or in the user's
-# custom PiHub configuration!
-# Check out the WordPress secret key generator if you're unsure what to
-# put here.
-#     https://api.wordpress.org/secret-key/1.1/salt/
-secret_key = os.getenv('PIHUB_SECRET_KEY', 'Update This!')
+# The secret key for user sessions. If PIHUB_SECRET_KEY is not set, a UUID
+# is automatically generated for the secret key. Note that this will change
+# the secret key with every start, thus session information is no retained
+# during a restart of the application.
+secret_key = os.getenv('PIHUB_SECRET_KEY', str(uuid.uuid4()))
 
 # The PiHub database configuration. Defaults to SQLite in your PiHub
 # configuration directory.
