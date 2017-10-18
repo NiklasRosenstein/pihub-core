@@ -3,6 +3,10 @@ Default configuration. The namespace of this file is merged into the actual
 configuration file.
 """
 
+from apscheduler.triggers.date import DateTrigger as date
+from apscheduler.triggers.cron import CronTrigger as cron
+from apscheduler.triggers.interval import IntervalTrigger as interval
+
 import os
 import uuid
 
