@@ -24,3 +24,7 @@ dashboard = "./components/dashboard"
 speedtest = "./components/speedtest"
 rss_feeds = "./components/rss_feeds"
 duckdns = "./components/duckdns"
+
+[dependencies.nodepy.werkzeug-reloader-patch]
+url = "https://github.com/nodepy/werkzeug-reloader-patch.git"
+version = "~0.0.5"
