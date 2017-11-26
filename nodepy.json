@@ -1,0 +1,30 @@
+{
+  "name": "@pihub/core",
+  "version": "1.0.0",
+  "resolve_root": "lib/",
+  "authors": [
+    "rosensteinniklas@gmail.com"
+  ],
+  "bin": {
+    "pihub": "./bin/main.py"
+  },
+  "dependencies": {
+    "werkzeug-reloader-patch": "git+https://github.com/nodepy/werkzeug-reloader-patch.git@v0.0.6"
+  },
+  "pip_dependencies": {
+    "Flask": ">=0.12.2",
+    "pony": ">=0.7.2",
+    "APScheduler": ">=3.3.1",
+    "pyspeedtest": ">=1.2.7",
+    "plotly": ">=2.1.0",
+    "python-dateutil": ">=2.6.1",
+    "feedparser": ">=5.2.1"
+  },
+  "pihub-components": {
+    "auth": "./components/auth",
+    "dashboard": "./components/dashboard",
+    "speedtest": "./components/speedtest",
+    "rss_feeds": "./components/rss_feeds",
+    "duckdns": "./components/duckdns"
+  }
+}
