@@ -22,7 +22,7 @@ import feedparser
 import flask
 import threading
 import {Component} from '@pihub/core/component'
-import {Dashboard} from '@pihub/core/../components/dashboard'
+import Dashboard from '@pihub/core/../components/dashboard'
 
 default_config = [
   {

@@ -2,7 +2,7 @@
 Starts the PiHub application.
 """
 
-__version__ = module.package.payload['package']['version']
+__version__ = module.package.payload['version']
 
 import argparse
 import code

@@ -53,12 +53,12 @@ def load_component(name, hooks=None):
     package_name, _, comp_name = name.partition(':')
     package = require(package_name, exports=False).package
 
-    if 'pihub' not in package.payload or 'components' not in package.payload['pihub']:
-      raise RuntimeError('package {!r} has no pihub.components configuration'.format(package_name))
-    if comp_name not in package.payload['pihub']['components']:
+    if 'pihub-components' not in package.payload:
+      raise RuntimeError('package {!r} has no pihub-components configuration'.format(package_name))
+    if comp_name not in package.payload['pihub-components']:
       raise RuntimeError('package {!r} has no component {!r}'.format(package_name, comp_name))
 
-    module_name = package.payload['pihub']['components'][comp_name]
+    module_name = package.payload['pihub-components'][comp_name]
     comp = package.require(module_name)()
 
   if not comp.name:
