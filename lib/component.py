@@ -33,8 +33,7 @@ class Component:
     return None
 
 
-
-def load_component(name, hooks=None):
+def load_component(name, hooks=None, get_module=False):
   """
   Loads a PiHub component by name and returns a new instance of it. The *name*
   must be of the format `package:component` where `package` is a Node.py
@@ -59,7 +58,10 @@ def load_component(name, hooks=None):
       raise RuntimeError('package {!r} has no component {!r}'.format(package_name, comp_name))
 
     module_name = package.payload['pihub-components'][comp_name]
-    comp = package.require(module_name)()
+    module = package.require(module_name, exports=False)
+    if get_module:
+      return module
+    comp = module.exports()
 
   if not comp.name:
     comp.name = name

@@ -1,6 +1,57 @@
 <img src="static/pihub-core/logo.png" align="right">
 
-# PiHub
+## @pihub/core
+
+*This is the PiHub core application package.*
+
+PiHub is a framework for creating user personalized web applications by
+combining prebuilt componenets. PiHub is built using
+
+* [Python 3.3+](https://python.org)
+* [Node.py](https://nodepy.org)
+* [React.JS](https://reactjs.org/)
+* [Webpack](https://webpack.js.org/)
+
+### Configuration
+
+First you need to install `@pihub/core`:
+
+    $ nodepy-pm install git+https://github.com/pihub-framework/pihub-core.git
+
+You configure PiHub using a `pihub.config.py` file in a directory of your
+choice. That directory will be used to compile all JavaScript components
+and this is where your PiHub application will be served from.
+
+    $ cat pihub.config.py
+    components = [
+      '@pihub/core:auth',
+      '@pihub/core:dashboard'
+    ]
+    auth = {
+      'password': 'welcome'
+    }
+
+To build the JavaScript bundle from the components that you want to use in
+your PiHub deployment, run the bundler script:
+
+    $ nodepy-pm @pihub/core/scripts/bundle --install
+    Loaded 1 package(s) from 2 componenent(s).
+    Found 2 React routes.
+    Merging JavaScript codebase.
+    Building bundle.
+    Writing combined package.json
+    Installing combined dependencies.
+    $ yarn install --silent --no-lockfile
+    $ yarn run webpack
+
+And you're good to go:
+
+    $ nodepy-pm @pihub/core/scripts/server
+
+
+---
+
+OLD README -- to be removed or updated
 
 Component based framework for creating customizable applications. Delivers a
 convenient API through the [Node.py Runtime][Node.py] and it's package
