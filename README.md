@@ -5,7 +5,7 @@
 *This is the PiHub core application package.*
 
 PiHub is a framework for creating user personalized web applications by
-combining prebuilt componenets. PiHub is built using
+combining prebuilt components. PiHub is built using
 
 * [Python 3.3+](https://python.org)
 * [Node.py](https://nodepy.org)
