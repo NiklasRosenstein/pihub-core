@@ -113,7 +113,7 @@ class DelayedEntity(
     bases = []
     for base in cls.__bases__:
       if issubclass(base, DelayedEntity) and base is not DelayedEntity:
-        bases.append(base.bind_entity(entity_class))
+        bases.append(base.bind_entity(entity_class, temporary))
     if not bases:
       bases.append(entity_class)
 
