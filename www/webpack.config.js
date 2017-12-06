@@ -2,10 +2,16 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  entry: '@pihub/core/app.jsx',
-  output: { path: {{@ output_dir|repr @}}, filename: 'bundle.js' },
+  entry: './@pihub/core/app.jsx',
+  output: {
+    publicPath: '/static/',
+    path: {{@ output_dir|repr @}},
+    filename: 'bundle.js'
+  },
   resolve: {
-    modules: [{{@ build_dir|repr @}}, {{@ (build_dir+'/node_modules')|repr @}}]
+    //modules: [{{@ build_dir|repr @}}, {{@ (build_dir+'/node_modules')|repr @}}]
+    modules: [__dirname, 'node_modules'],
+    extensions: ['.js', '.jsx']
   },
   module: {
     loaders: [

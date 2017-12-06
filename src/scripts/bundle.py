@@ -15,7 +15,7 @@ import shutil
 import subprocess
 import sys
 import textwrap
-import {load_component} from '../lib/component'
+import {load_component} from '../component'
 
 parser = argparse.ArgumentParser(
   formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -35,15 +35,13 @@ parser.add_argument(
   help='The output directory of the bundle built with webpack.'
 )
 parser.add_argument(
-  '--pihub-config',
-  default='pihub-config.py',
-  help='The PiHub configuration file.'
-)
-parser.add_argument(
   '--install',
   action='store_true',
   help='Install JavaScript dependencies to build the bundle using Yarn.'
 )
+parser.add_argument('--no-sync', action='store_true')
+parser.add_argument('--no-install', action='store_true')
+parser.add_argument('--no-bundle', action='store_true')
 
 
 def copytree(src, dst, symlinks=False, ignore=None, copyfile=None):
@@ -99,21 +97,13 @@ def yarn(*argv, cwd=None):
 
 def main(argv=None):
   args = parser.parse_args(argv)
-  config = require(os.path.abspath(args.pihub_config))
-
-  if not hasattr(config, 'components'):
-    config.components = []
-  if not hasattr(config, 'react_router_modules'):
-    config.react_router_modules = []
+  import config from '../config'
 
   # Determine distinct packages from components.
   packages = []
   dependencies = {}
   for comp in config.components:
-    module = load_component(comp, get_module=True)
-    comp = module.exports()
-    if hasattr(comp, 'init_config'):
-      comp.init_config(config)
+    module = load_component(comp, get_namespace=False)
     package = module.package
     if package not in packages:
       packages.append(package)
@@ -125,33 +115,36 @@ def main(argv=None):
   # Print info about packages.
   print('Loaded {} package(s) from {} componenent(s).'.format(
       len(packages), len(config.components)))
-  print('Found {} React routes.'.format(len(config.react_router_modules)))
-
-  # Merge JavaScript codebase while preprocessing with Jinja2.
-  print('Merging JavaScript codebase.')
-  copyfile = make_preprocessor(
-    pihub=config,
-    output_dir=os.path.abspath(args.bundle_directory),
-    build_dir=os.path.abspath(args.build_directory)
-  )
-  os.makedirs(args.build_directory, exist_ok=True)
-  for package in packages:
-    www_dir = package.directory.joinpath('www')
-    if www_dir.is_dir():
-      copytree(str(www_dir), args.build_directory, copyfile=copyfile)
+  print('Found {} React routes.'.format(len(config.react_routes)))
 
   # Install dependencies.
-  if args.install:
+  if not args.no_install:
     print('Writing combined package.json')
+    os.makedirs(args.build_directory, exist_ok=True)
     with open(os.path.join(args.build_directory, 'package.json'), 'w') as fp:
       json.dump({'dependencies': dependencies}, fp)
     print('Installing combined dependencies.')
-    yarn('install', '--silent', '--no-lockfile',
-        cwd=args.build_directory)
+    yarn('install', '--silent', cwd=args.build_directory)
 
-  print('Building bundle.')
-  os.makedirs(args.bundle_directory, exist_ok=True)
-  yarn('run', 'webpack', cwd=args.build_directory)
+  # Merge JavaScript codebase while preprocessing with Jinja2.
+  if not args.no_sync:
+    print('Merging JavaScript codebase.')
+    copyfile = make_preprocessor(
+      pihub=config,
+      output_dir=os.path.abspath(args.bundle_directory),
+      build_dir=os.path.abspath(args.build_directory)
+    )
+    os.makedirs(args.build_directory, exist_ok=True)
+    for package in packages:
+      www_dir = package.directory.joinpath('www')
+      if www_dir.is_dir():
+        copytree(str(www_dir), args.build_directory, copyfile=copyfile)
+
+  # Build the bundle.
+  if not args.no_bundle:
+    print('Building bundle.')
+    os.makedirs(args.bundle_directory, exist_ok=True)
+    yarn('run', 'webpack', cwd=args.build_directory)
 
 
 if require.main == module:

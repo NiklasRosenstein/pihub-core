@@ -1,13 +1,16 @@
 {
   "name": "@pihub/core",
   "version": "1.0.0",
-  "resolve_root": "lib/",
+  "resolve_root": "src/",
   "authors": [
     "rosensteinniklas@gmail.com"
   ],
   "bin": {
     "pihub": "./bin/main.py"
   },
+  "extensions": [
+    "werkzeug-reloader-patch"
+  ],
   "dependencies": {
     "werkzeug-reloader-patch": "git+https://github.com/nodepy/werkzeug-reloader-patch.git@v0.0.6"
   },
@@ -19,12 +22,5 @@
     "plotly": ">=2.1.0",
     "python-dateutil": ">=2.6.1",
     "feedparser": ">=5.2.1"
-  },
-  "pihub-components": {
-    "auth": "./components/auth",
-    "dashboard": "./components/dashboard",
-    "speedtest": "./components/speedtest",
-    "rss_feeds": "./components/rss_feeds",
-    "duckdns": "./components/duckdns"
   }
 }
