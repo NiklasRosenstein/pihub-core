@@ -10,6 +10,10 @@ pre-built components, ultimately allowing users to create their own deployments
 à la Home Assistant on, for example, a RaspberryPi. It's secondary goal is to
 allow using PiHub as a basis for Python+React based application.
 
+__To do__
+
+* Database migration API (ideally, using the upcoming Pony Migration tool)
+
 
 ### Installation
 
@@ -122,3 +126,23 @@ exports const routes = [
   <Route exact path={URL} component={MyComponent}/>
 ]
 ```
+
+
+#### Component Metadata
+
+The `__component_meta__` member is mandatory in the Python module for every
+PiHub component. The following entries are currently taken into account:
+
+##### `requires`
+
+A list of other component names that your component depends on.
+
+##### `database_revision`
+
+The revision number of the component's database schema. If the revision number
+for a component changes during the lifecycle of a production instance, a
+migration will be triggered by calling the `execute_migration(from_, to)`
+function in your Python module.
+
+*This metadata key is only required when using the `@pihub/core/database`
+component.*
