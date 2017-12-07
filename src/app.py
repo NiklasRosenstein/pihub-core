@@ -21,28 +21,34 @@ def index(path=None):
 
 
 def init():
-  # Ensure that all components are loaded.
-  config.loader.load_components(config.components)
+  if not config.debug or os.getenv('WERKZEUG_RUN_MAIN', '') == 'true':
+    # Ensure that all components are loaded.
+    print('Loading components ...')
+    config.loader.load_components(config.components)
 
-  # Assert that all database schemas are up-to-date.
-  error = False
-  InstalledComponent = database.temporary_binding()[1]
-  with database.session:
-    for name, comp, have_rev, curr_rev in database.component_revisions(InstalledComponent):
-      if curr_rev is None: continue  # component not installed
-      if have_rev is not None and have_rev != curr_rev:
-        print('ERROR {} database schema is not up-to-date.'.format(name))
-  if error:
-    exit(1)
+    # Assert that all database schemas are up-to-date.
+    print('Checking component database_revision consistency ...')
+    error = False
+    InstalledComponent = database.temporary_binding()[1]
+    with database.session:
+      for name, comp, have_rev, curr_rev in database.component_revisions(InstalledComponent):
+        if curr_rev is None: continue  # component not installed
+        if have_rev is not None and have_rev != curr_rev:
+          print('ERROR {} database schema is not up-to-date.'.format(name))
+    if error:
+      exit(1)
 
-  # Connect to the database and bind all delayed entities.
-  database.bind()
+    # Connect to the database and bind all delayed entities.
+    print('Connecting database and binding entities ...')
+    database.bind()
 
-  # Initialize all components.
-  config.loader.call_if_exists('init_component')
+    # Initialize all components.
+    print('Initializing components ...')
+    config.loader.call_if_exists('init_component')
 
-  # Register all UI routes.
-  for route in config.ui_routes:
-    app.add_url_rule(route, view_func=index)
+    # Register all UI routes.
+    print('Register UI routes ...')
+    for route in config.ui_routes:
+      app.add_url_rule(route, view_func=index)
 
   return app

@@ -24,7 +24,8 @@ module.exports = {
       },
       { test: /\.css$/, loader: "style-loader!css-loader" },
       { test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: "url-loader" },
-      { test: /\.(ttf|eot|svg|png)(\?[\s\S]+)?$/, use: 'file-loader' }
+      { test: /\.(ttf|eot|svg|png)(\?[\s\S]+)?$/, use: 'file-loader' },
+      { test: /\.js$/, loader: 'ify-loader' },  // Plotly.JS
     ]
   }
 }
