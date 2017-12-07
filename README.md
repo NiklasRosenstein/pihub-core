@@ -58,8 +58,9 @@ web bundle. After that, you can start the development server.
     $ pihub bundle build
     $ pihub bundle wsgi --debug
 
-To deploy PiHub on a production server, use the `@pihub/core/scripts/wsgi`
-module and it's `application` member. For example:
+To deploy PiHub on a production server, use the `@pihub/core/app:init()`
+function to initialize the PiHub application, perform a database consistency
+check and retrieve the Flask application object.
 
     $ ls -a
     .nodepy  build  main.py  Procfile  pihub.config.py
@@ -67,7 +68,7 @@ module and it's `application` member. For example:
     web: gunicorn main:application
     $ cat main.py
     import nodepy
-    application = nodepy.require('@pihub/core/scripts/wsgi').application
+    application = nodepy.require('@pihub/core/app').init()
 
 
 ### Concepts
