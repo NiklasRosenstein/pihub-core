@@ -18,6 +18,7 @@ config.setdefault('auth', {})
 config.auth.setdefault('password', 'alpine')
 config.auth.setdefault('token_timeout', {'hours': 2})
 config.auth.setdefault('exclude', ['/auth/*', '/static/*'])
+config.auth.setdefault('session_variable', 'pihub_auth_token')
 
 
 class AuthToken(database.DelayedEntity):
@@ -37,15 +38,16 @@ class AuthToken(database.DelayedEntity):
     super().__init__(token=token, expires_on=expires_on, remote_addr=remote_addr)
 
   @classmethod
-  @database.session
-  def has_unexpired_token(cls, token):
+  def get_unexpired(cls, token):
+    if not token:
+      return None
     obj = cls.get(token=token)
     if obj is None:
       return False
     if obj.expires_on and obj.expires_on < datetime.datetime.utcnow():
       obj.delete()
-      return False
-    return True
+      return None
+    return obj
 
 
 @app.route('/auth/signin', methods=['GET', 'POST'])
@@ -55,32 +57,32 @@ def auth_signin():
     password = flask.request.form.get('password')
     if config.auth['password'] == password:
       token = AuthToken()
-      flask.session['token'] = token.token
+      flask.session[config.auth['session_variable']] = token.token
       return flask.redirect(flask.url_for('index'))
     return flask.Response('Wrong password.', code=403, mime='text/plain')
-  # Display the React app.
+  if AuthToken.get_unexpired(flask.session.get(config.auth['session_variable'])):
+    return flask.redirect(flask.url_for('index'))
   return flask.render_template('@pihub/core/index.html')
 
 
 @app.route('/auth/signout', methods=['GET'])
 @database.session
 def auth_signout():
-  token_string = flask.session.pop('token', None)
-  if token_string:
-    auth_token = AuthToken.get(token=token_string)
-    if auth_token:
-      auth_token.delete()
+  token = AuthToken.get_unexpired(flask.session.pop(config.auth['session_variable'], None))
+  if token:
+    token.delete()
   return flask.redirect(flask.url_for('auth_signin'))
 
 
 @app.before_request
+@database.session
 def auth_middleware():
   for pattern in config.auth['exclude']:
     if fnmatch.fnmatch(flask.request.path, pattern):
       return None  # No auth required
-  token = flask.session.get('token')
-  if not token or not AuthToken.has_unexpired_token(token):
-    return flask.redirect(flask.url_for('auth_signout'))
+  token = AuthToken.get_unexpired(flask.session.get(config.auth['session_variable']))
+  if not token:
+    return flask.redirect(flask.url_for('auth_signin'))
   return None
 
 
