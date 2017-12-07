@@ -12,17 +12,17 @@ import requests
 import {config} from '@pihub/core'
 import scheduler from '@pihub/core/components/scheduler'
 
-config.setdefault('duckdns', {
-  'token': None,
-  'domains': [],
-  'interval': {'type': 'cron', 'hour': '*'}
-})
+config.setdefault('duckdns', {})
+config.duckdns.setdefault('token', None)
+config.duckdns.setdefault('domains', [])
+config.duckdns.setdefault('interval', {'type': 'cron', 'hour': '*'})
+
 
 API_URL = 'https://www.duckdns.org/update?domains={domains}&token={token}'
 
 
 def init_component():
-  if config.duckdns.get('token') and config.duckdns.get('domains'):
+  if config.duckdns['token'] and config.duckdns['domains']:
     trigger = scheduler.trigger_from_config(config.duckdns['interval'])
     scheduler.schedule_job(do_duckdns_update, trigger)
   else:

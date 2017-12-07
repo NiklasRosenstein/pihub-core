@@ -20,8 +20,8 @@ def main(argv=None):
   if args.debug: config.debug = True
 
   init_application().run(
-    host = getattr(config, 'host', 'localhost'),
-    port = getattr(config, 'port', 7442),
+    host = config.host,
+    port = config.port,
     debug = config.debug
   )
 

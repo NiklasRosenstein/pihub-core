@@ -19,7 +19,6 @@
     "pony": ">=0.7.2",
     "APScheduler": ">=3.3.1",
     "pyspeedtest": ">=1.2.7",
-    "python-dateutil": ">=2.6.1",
-    "feedparser": ">=5.2.1"
+    "python-dateutil": ">=2.6.1"
   }
 }

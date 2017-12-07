@@ -9,6 +9,8 @@ filename = os.getenv('PIHUB_CONFIG', 'pihub.config.py')
 config = require(os.path.abspath(filename))
 
 config.setdefault = vars(config).setdefault
+config.setdefault('host', 'localhost')
+config.setdefault('port', 7442)
 config.setdefault('debug', False)
 config.setdefault('components', [])
 config.setdefault('ui_routes', [])
