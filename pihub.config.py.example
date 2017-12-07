@@ -1,4 +1,6 @@
 
+import os
+
 host = 'localhost'
 port = 7442
 debug = False
@@ -12,6 +14,12 @@ components = [
   '@pihub/core/components/speedtest',
   '@pihub/core/components/auth',
 ]
+
+database = {
+  'provider': 'sqlite',
+  'filename': os.path.abspath('pihub.sqlite'),
+  'create_db': True
+}
 
 auth = {
   'password': 'alpine',
