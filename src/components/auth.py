@@ -13,7 +13,6 @@ __component_meta__ = {
   'database_revision': 1
 }
 
-config.add_web_module('@pihub/core/components/auth')
 config.setdefault('auth', {})
 config.auth.setdefault('password', 'alpine')
 config.auth.setdefault('token_timeout', {'hours': 2})

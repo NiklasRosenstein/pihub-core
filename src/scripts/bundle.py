@@ -151,8 +151,8 @@ def main(argv=None):
         dependencies.update(json.load(fp).get('dependencies', {}))
 
   # Print info about packages.
-  print('Loaded {} package(s) from {} componenent(s) with {} web modules.'
-      .format(len(packages), len(components), len(config.web_modules)))
+  print('Loaded {} package(s) from {} componenent(s).'
+      .format(len(packages), len(components)))
 
   if args.command == 'install':
     print('Writing combined package.json')
@@ -174,8 +174,12 @@ def main(argv=None):
       os.makedirs(config.build_directory, exist_ok=True)
       for package in packages:
         www_dir = package.directory.joinpath('www')
+        dst_dir = os.path.join(config.build_directory, package.name)
         if www_dir.is_dir():
-          copytree(str(www_dir), config.build_directory, copyfile=copyfile)
+          os.makedirs(dst_dir, exist_ok=True)
+          copytree(str(www_dir), dst_dir, copyfile=copyfile)
+      copyfile(str(module.package.directory.joinpath('webpack.config.js')),
+               os.path.join(config.build_directory, 'webpack.config.js'))
 
     os.makedirs(config.bundle_directory, exist_ok=True)
     return yarn('run', 'webpack', cwd=config.build_directory)

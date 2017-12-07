@@ -1,11 +1,5 @@
 """
-The dashboard component.
+The dashboard component. This file is a proxy for the React component.
 """
 
-import collections
-import flask
-import {app, config} from '@pihub/core'
-
 __component_meta__ = {}
-
-config.add_web_module('@pihub/core/components/dashboard')

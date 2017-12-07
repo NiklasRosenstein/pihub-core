@@ -13,20 +13,20 @@ for Python+React based application.
 
 ### Installation
 
-__Requirements__
+#### Requirements
 
 * [Python 3.3+](https://python.org)
 * [Node.py 2.1+](https://nodepy.org)
 * [Yarn](https://yarnpkg.com/lang/en/)
 
-__Installing @pihub/core__
+#### Installing @pihub/core
 
     $ export PATH=".nodepy/bin:$PATH"
     $ nodepy-pm install git+https://github.com/pihub-framework/pihub-core.git
     $ pihub --version
     1.0.0-dev
 
-__Configuration__
+#### Configuration
 
     $ cat pihub.config.py
     components = [
@@ -42,9 +42,10 @@ __Configuration__
       'filename': str(module.directory.joinpath('pihub.sqlite'))
     }
 
-__Deployment__
 
-THe `pihub` CLI orchestrates the deployment process (and is also useful during
+### Deployment
+
+The `pihub` CLI orchestrates the deployment process (and is also useful during
 development). After you've set up your PiHub configuration, you must install
 the JavaScript dependencies required by your PiHub components and build a
 web bundle. After that, you can start the development server.
@@ -67,54 +68,39 @@ module and it's `application` member. For example:
 
 ### Concepts
 
-PiHub uses Node.py for its import-mechanism and its package management, as
-it fits the bill better than using Pip and standard Python modules. Installing
-new components is a pain-less process of using the `nodepy-pm` CLI and
-updating the PiHub configuration.
+#### Components
 
-Components in PiHub are two-fold: For once they are a Node.py Python module
-that is requirable from the `@pihub/core/component` module, but usually they
-also come with a **Web Module**. All web modules must lie inside the `www`
-directory of their respective Node.py package directory. They will be joined
-into a single codebase by the `pihub bundle` command to produce a bundle with
-Webpack.
+PiHub components a are two-fold: They always consist of a Node.py Python
+module and a JavaScript module. One Node.py package can expose multiple
+PiHub components.
 
-Step to create a new PiHub component:
-
-1. Create a `nodepy.json` file in your component's package directory and call
-    your package `@pihub-contrib/my-component`
-2. (Optional) Create a `package.json` file if your component requires 
-    additional JavaScript dependencies
-3. Create a `index.py` file that contains your components' Python code
-4. Create a `www/@pihub-contrib/my-component.jsx` file that contains your
-    components' React code
-
-**nodepy.json**:
-
-```json
-{
-    "name": "@pihub-contrib/my-component",
-    "version": "1.0.0"
-}
-```
-
-**index.py**:
+The Python module of the PiHub component must define a `__component_meta__`
+member. If the component wishes to declare database entities, it needs to
+specify the `'database_revision'` key in the metadata.
 
 ```python
-import {app, config} from '@pihub/core'
+__component_meta__ = {
+  'database_revision': 1
+}
 
-# This will load the www/@pihub-contrib/my-component module in the
-# PiHub web entry point.
-config.add_web_module('@pihub-contrib/my-component')
+import {app, config, database} from '@pihub/core'
 
-# Do whatever you want here, eg. registering new routes to the Flask `app`
+# ... Do whatever you want, eg. define new routes in the Flask app
 ```
 
-**www/@pihub-contrib/my-component.jsx**:
+The **JavaScript** module must reside in the `www/` subdirectory of the
+component and must have the same name and and path relative to the `www/`
+directory as the Python module to the package's `resolve_root`. Thus, if
+you don't define a `resolve_root` in the Node.py package manifest, and you
+component is in `components/somecomp.py`, then the JavaScript module must be
+at `www/components/somecomp.py`.
+
+The JavaScript module *must* export a `routes` member that is a list of
+React routes. Example:
 
 ```js
 import React from 'react'
-const dashboard = require('@pihub/core/components/dashboard')
+const dashboard = require('@pihub/core/components/dashboard')  // TODO: How to get the same object with `import ... from ...`?
 
 const URL = '/my-component'
 
