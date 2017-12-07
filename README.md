@@ -13,6 +13,9 @@ allow using PiHub as a basis for Python+React based application.
 __To do__
 
 * Database migration API (ideally, using the upcoming Pony Migration tool)
+* Some way to automatically rebuild the webpack bundle on change? Keep in 
+  mind that changes happen not in the directory that webpack generates the
+  bundle from, but the actual PiHub component source files
 
 
 ### Installation
