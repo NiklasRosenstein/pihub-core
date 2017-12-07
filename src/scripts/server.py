@@ -22,7 +22,7 @@ def main(argv=None):
   init_application().run(
     host = getattr(config, 'host', 'localhost'),
     port = getattr(config, 'port', 7442),
-    debug = getattr(config, 'debug', False)
+    debug = config.debug
   )
 
 
