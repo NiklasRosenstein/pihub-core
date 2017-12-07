@@ -59,7 +59,7 @@ def auth_signin():
       token = AuthToken()
       flask.session[config.auth['session_variable']] = token.token
       return flask.redirect(flask.url_for('index'))
-    return flask.Response('Wrong password.', code=403, mime='text/plain')
+    return flask.Response('Wrong password.', status=403, mimetype='text/plain')
   if AuthToken.get_unexpired(flask.session.get(config.auth['session_variable'])):
     return flask.redirect(flask.url_for('index'))
   return flask.render_template('@pihub/core/index.html')
