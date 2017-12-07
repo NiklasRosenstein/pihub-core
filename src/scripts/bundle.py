@@ -151,8 +151,8 @@ def main(argv=None):
         dependencies.update(json.load(fp).get('dependencies', {}))
 
   # Print info about packages.
-  print('Loaded {} package(s) from {} componenent(s).'.format(len(packages), len(components)))
-  print('Found {} React routes.'.format(len(config.react_routes)))
+  print('Loaded {} package(s) from {} componenent(s) with {} web modules.'
+      .format(len(packages), len(components), len(config.web_modules)))
 
   if args.command == 'install':
     print('Writing combined package.json')

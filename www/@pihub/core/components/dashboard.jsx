@@ -1,6 +1,9 @@
 import styled from 'styled-components'
 import React from 'react'
-import {Route} from 'react-router-dom'
+import {Link, Route} from 'react-router-dom'
+
+export const initCallbacks = []
+
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,14 +41,19 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props)
     this.state = {menuLeft: [], menuRight: []}
+    initCallbacks.map(func => func(this))
   }
   render() {
     return <Wrapper className="full height">
       <div className="toc">
         <div className="ui vertical inverted left visible menu sidebar visible">
-          {this.state.menuLeft}
+          {this.state.menuLeft.map(item => {
+            return <Link key={item.url} to={item.url}>{item.text}</Link>
+          })}
           <div className="right menu">
-            {this.state.menuRight}
+            {this.state.menuRight.map(item => {
+            return <Link key={item.url} to={item.url}>{item.text}</Link>
+          })}
           </div>
         </div>
       </div>
@@ -59,4 +67,6 @@ class Dashboard extends React.Component {
   }
 }
 
-export default <Route exact path="/" component={Dashboard}/>
+export const routes = [
+  <Route exact path="/" component={Dashboard}/>
+]

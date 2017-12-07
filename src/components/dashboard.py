@@ -8,4 +8,4 @@ import {app, config} from '@pihub/core'
 
 __component_meta__ = {}
 
-config.react_routes.append('@pihub/core/components/dashboard')
+config.add_web_module('@pihub/core/components/dashboard')

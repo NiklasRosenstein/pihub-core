@@ -1,10 +1,16 @@
 import axios from 'axios'
 import styled from 'styled-components'
 import React from 'react'
-import {Route, withRouter} from 'react-router-dom'
+import {Link, Route, withRouter} from 'react-router-dom'
 
 import logo from '@pihub/core/logo.png'
 
+require('@pihub/core/components/dashboard').initCallbacks.push((dashboard) => {
+  dashboard.state.menuLeft.push({
+    'url': '/auth/signout',
+    'text': 'Sign Out'
+  })
+})
 
 const Wrapper = styled.div`
   background-color: #DADADA;
@@ -20,7 +26,7 @@ const Column = styled.div`
   max-width: 450px;
 `
 
-class AuthComponent extends React.Component {
+class AuthSignin extends React.Component {
   constructor(props) {
     super(props)
     this.state = {error: null, password: ''}
@@ -71,12 +77,12 @@ class AuthComponent extends React.Component {
       data: data
     })
     .then(response => {
-      // TODO: Maybe actually use the URL returned by the signin redirect.
-      this.props.history.push('/')
       this.setState(state => {
         state.error = null
         return state
       })
+      // TODO: Maybe actually use the URL returned by the signin redirect.
+      this.props.history.push('/')
     })
     .catch(error => {
       let message
@@ -94,4 +100,18 @@ class AuthComponent extends React.Component {
   }
 }
 
-export default <Route exact path="/auth/signin" component={withRouter(AuthComponent)}/>
+class AuthSignout extends React.Component {
+  componentDidMount() {
+    axios.get('/auth/signout')
+    this.props.history.push('/auth/signin')
+  }
+  render() {
+    return <div>Signing you out ...</div>
+  }
+}
+
+
+export const routes = [
+  <Route exact path="/auth/signin" component={withRouter(AuthSignin)}/>,
+  <Route exact path="/auth/signout" component={withRouter(AuthSignout)}/>
+];

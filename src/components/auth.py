@@ -13,7 +13,7 @@ __component_meta__ = {
   'database_revision': 1
 }
 
-config.react_routes.append('@pihub/core/components/auth')
+config.add_web_module('@pihub/core/components/auth')
 config.setdefault('auth', {})
 config.auth.setdefault('password', 'alpine')
 config.auth.setdefault('token_timeout', {'hours': 2})
