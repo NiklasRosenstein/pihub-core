@@ -32,23 +32,14 @@ __To do__
 
 #### Configuration
 
-Note that React routes will only be loaded for components that are explicitly
-defined in the `components` list.
+Check out the `pihub.config.py.example`, or use it as-is (maybe at least
+change the password and secret key).
 
-    $ cat pihub.config.py
-    components = [
-      '@pihub/core/components/auth',
-      '@pihub/core/components/dashboard'
-    ]
-    auth = {
-      'password': 'alpine'
-    }
-    database = {
-      # PiHub uses Pony ORM. This will be passed to Database.bind().
-      'provider': 'sqlite',
-      'filename': str(module.directory.joinpath('pihub.sqlite'))
-    }
+    $ cp .nodepy/modules/@pihub/core/pihub.config.py.example pihub.config.py
+    $ $(EDITOR) pihub.config.py
 
+Note that React routes will only be included for components that are
+explicitly defined in the `components` list.
 
 ### Deployment
 
@@ -59,7 +50,7 @@ web bundle. After that, you can start the development server.
 
     $ pihub bundle install
     $ pihub bundle build
-    $ pihub bundle wsgi --debug
+    $ pihub bundle server --debug
 
 To deploy PiHub on a production server, use the `@pihub/core/app:init()`
 function to initialize the PiHub application, perform a database consistency

@@ -6,11 +6,11 @@ debug = False
 timezone = None
 
 components = [
-  '@pihub/core/components/auth',
   '@pihub/core/components/dashboard',
   '@pihub/core/components/duckdns',
   '@pihub/core/components/scheduler',
   '@pihub/core/components/speedtest',
+  '@pihub/core/components/auth',
 ]
 
 auth = {

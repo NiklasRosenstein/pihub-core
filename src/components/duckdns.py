@@ -5,7 +5,8 @@ A component to regularly update a DuckDNS URL.
 __component_meta__ = {
   'requires': [
     '@pihub/core/components/scheduler'
-  ]
+  ],
+  'web_module': None
 }
 
 import requests
