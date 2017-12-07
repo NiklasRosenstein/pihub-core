@@ -18,6 +18,7 @@ config.setdefault('database', {
 })
 
 __component_meta__ = {
+  'web_module': None,
   'database_revision': 1
 }
 

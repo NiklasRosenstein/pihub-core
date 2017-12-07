@@ -12,7 +12,7 @@ function initWebModules(routes) {
   let curr_module = null
   let other_module = null
   {{# Load all routes into the routes array and wire modules together. #}}
-  {{% for module_name in pihub.components %}}
+  {{% for module_name in web_modules %}}
   curr_module = require('{{@ module_name @}}')
   if (curr_module.routes !== undefined) {
     Array.prototype.push.apply(routes, curr_module.routes)

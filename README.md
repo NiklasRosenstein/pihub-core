@@ -32,6 +32,9 @@ __To do__
 
 #### Configuration
 
+Note that React routes will only be loaded for components that are explicitly
+defined in the `components` list.
+
     $ cat pihub.config.py
     components = [
       '@pihub/core/components/auth',
@@ -86,6 +89,10 @@ specify the `'database_revision'` key in the metadata.
 ```python
 # mypihubextension/components/somecomp.py
 __component_meta__ = {
+  'requires': [
+    '@pihub/core/database',
+    '@pihub/core/components/dashboard'
+  ],
   'database_revision': 1
 }
 
@@ -137,6 +144,12 @@ PiHub component. The following entries are currently taken into account:
 ##### `requires`
 
 A list of other component names that your component depends on.
+
+##### `web_module`
+
+The name of the JavaScript module to load for this component. Defaults to the
+component name. Can be set to `None` if the PiHub component has no JavaScript
+module.
 
 ##### `database_revision`
 

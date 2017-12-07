@@ -5,11 +5,10 @@ module.exports = {
   entry: './@pihub/core/app.jsx',
   output: {
     publicPath: '/static/',
-    path: {{@ output_dir|repr @}},
+    path: {{@ bundle_directory|repr @}},
     filename: 'bundle.js'
   },
   resolve: {
-    //modules: [{{@ build_dir|repr @}}, {{@ (build_dir+'/node_modules')|repr @}}]
     modules: [__dirname, 'node_modules'],
     extensions: ['.js', '.jsx']
   },

@@ -135,7 +135,7 @@ def main(argv=None):
     return yarn('add', *argv)
 
   config.loader.load_components(config.components)
-  packages = set(x.package for x in config.loader.component_modules)
+  packages = set(x.package for x in config.loader.component_modules.values())
   dependencies = {}
   for package in packages:
     package_json = package.directory.joinpath('package.json')
@@ -160,9 +160,11 @@ def main(argv=None):
     if not args.no_sync:
       print('Merging JavaScript codebase.')
       copyfile = make_preprocessor(
-        pihub=config,
-        output_dir=os.path.abspath(config.bundle_directory),
-        build_dir=os.path.abspath(config.build_directory)
+        web_modules=list(filter(bool, [
+          config.loader.get_component(k).__component_meta__.get('web_module', k)
+          for k in config.components
+        ])),
+        bundle_directory=os.path.abspath(config.build_directory)
       )
       os.makedirs(config.build_directory, exist_ok=True)
       for package in packages:
