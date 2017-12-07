@@ -1,4 +1,4 @@
-<img src="static/pihub-core/logo.png" align="right">
+<img src="www/logo.png" align="right">
 
 ## @pihub/core
 
@@ -7,8 +7,8 @@
 PiHub is a Python web application with a React frontend. It's main goal is to
 provide an easily extensible web application infrastructure for composing
 pre-built components, ultimately allowing users to create their own deployments
-à la Home Assistant. It's secondary goal is to allow using PiHub as a basis
-for Python+React based application.
+à la Home Assistant on, for example, a RaspberryPi. It's secondary goal is to
+allow using PiHub as a basis for Python+React based application.
 
 
 ### Installation
@@ -79,6 +79,7 @@ member. If the component wishes to declare database entities, it needs to
 specify the `'database_revision'` key in the metadata.
 
 ```python
+# mypihubextension/components/somecomp.py
 __component_meta__ = {
   'database_revision': 1
 }
@@ -99,6 +100,7 @@ The JavaScript module *must* export a `routes` member that is a list of
 React routes. Example:
 
 ```js
+// mypihubextension/www/components/somecomp.jsx
 import React from 'react'
 const dashboard = require('@pihub/core/components/dashboard')  // TODO: How to get the same object with `import ... from ...`?
 
