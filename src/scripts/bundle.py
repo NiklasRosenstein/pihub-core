@@ -164,7 +164,7 @@ def main(argv=None):
           config.loader.get_component(k).__component_meta__.get('web_module', k)
           for k in config.components
         ])),
-        bundle_directory=os.path.abspath(config.build_directory)
+        bundle_directory=os.path.abspath(config.bundle_directory)
       )
       os.makedirs(config.build_directory, exist_ok=True)
       for package in packages:

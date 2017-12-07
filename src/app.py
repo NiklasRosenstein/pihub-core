@@ -16,8 +16,6 @@ app = flask.Flask(
 )
 app.config['SECRET_KEY'] = getattr(config, 'secret_key', None) or str(uuid.uuid4())
 
-# TODO: Forward any and all supported routes to to the index.html.
-@app.route('/')
 def index(path=None):
   return flask.render_template('@pihub/core/index.html')
 
@@ -42,5 +40,9 @@ def init():
 
   # Initialize all components.
   config.loader.call_if_exists('init_component')
+
+  # Register all UI routes.
+  for route in config.ui_routes:
+    app.add_url_rule(route, view_func=index)
 
   return app

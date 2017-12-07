@@ -10,6 +10,7 @@ config = require(os.path.abspath(filename))
 
 config.setdefault = vars(config).setdefault
 config.setdefault('components', [])
+config.setdefault('ui_routes', [])
 config.setdefault('build_directory', 'build/src')
 config.setdefault('bundle_directory', 'build/bundle')
 config.setdefault('loader', ComponentLoader())
