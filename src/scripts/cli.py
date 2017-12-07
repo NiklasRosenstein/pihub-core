@@ -7,7 +7,8 @@ import sys
 import nodepy
 
 parser = argparse.ArgumentParser()
-parser.add_argument('command', choices={'bundle', 'wsgi'})
+parser.add_argument('--version', action='version', version=module.package.payload['version'])
+parser.add_argument('command', choices={'addjs', 'bundle', 'wsgi'})
 parser.add_argument('argv', nargs='...')
 args = parser.parse_args()
 
