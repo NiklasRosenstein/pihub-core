@@ -1,10 +1,5 @@
 """
-Builds a JavaScript bundle from the components defined in the PiHub
-configuration file. The following steps will be performed:
-
-1. Render all files from the www/ directory of all components and the
-   `webpack.config.js` to the build directory using Jinja2.
-2. Create a bundle using the `webpack` command.
+Orchestrates the JavaScript bundling process.
 """
 
 import argparse
@@ -16,7 +11,6 @@ import subprocess
 import sys
 import textwrap
 import config from '../config'
-import {load_component} from '../component'
 
 parser = argparse.ArgumentParser(
   formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -140,9 +134,8 @@ def main(argv=None):
     argv = args.yarn_add_args + ['--modules-folder', node_modules, '--no-bin-links']
     return yarn('add', *argv)
 
-  components = [load_component(comp, get_namespace=False)
-      for comp in config.components]
-  packages = set(x.package for x in components)
+  config.loader.load_components(config.components)
+  packages = set(x.package for x in config.loader.component_modules)
   dependencies = {}
   for package in packages:
     package_json = package.directory.joinpath('package.json')
@@ -152,7 +145,7 @@ def main(argv=None):
 
   # Print info about packages.
   print('Loaded {} package(s) from {} componenent(s).'
-      .format(len(packages), len(components)))
+      .format(len(packages), len(config.loader.component_modules)))
 
   if args.command == 'install':
     print('Writing combined package.json')

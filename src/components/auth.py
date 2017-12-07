@@ -83,12 +83,3 @@ def auth_middleware():
   if not token:
     return flask.redirect(flask.url_for('auth_signin'))
   return None
-
-
-def init_component():
-  with database.session:
-    #AuthToken(remote_addr='foo')
-    print(AuthToken.get(token='foo'))
-    pass
-
-#right.append(Dashboard.MenuItem('Sign Out', '/signout', icon='sign out'))

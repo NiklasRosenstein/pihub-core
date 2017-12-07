@@ -3,13 +3,14 @@ Initializes the PiHub WSGI application.
 """
 
 import {app as application} from '../app'
-import {load_component} from '../component'
 import config from '../config'
 import database from '../database'
 
-components = [load_component(x) for x in config.components]
+config.loader.load_components(config.components)
 database.initialize()
-[x.init_component() for x in components if hasattr(x, 'init_component')]
+
+[x.init_component() for x in config.loader.components
+  if hasattr(x, 'init_component')]
 
 
 if require.main == module:

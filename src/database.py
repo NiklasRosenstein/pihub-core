@@ -7,7 +7,6 @@ from pony.orm.core import Database, db_session as session
 import os
 import pony.orm.core
 import types
-import {load_component} from './component'
 import config from './config'
 import utils from './utils'
 
@@ -54,7 +53,7 @@ class DelayedEntity(
       cls.__module__ = module
     else:
       module = cls.__module__
-    component = load_component(module)
+    component = config.loader.load_component(module)
     if not isinstance(component.__component_meta__.get('database_revision'), int):
       raise RuntimeError('component {!r} can not declare entities without '
           'specifying database_revision in __component_meta__ (note: must be '
@@ -179,7 +178,7 @@ def do_component_migration():
     raise RuntimeError(msg)
 
   def migrate_comp(comp):
-    module = load_component(component)
+    module = config.loader.load_component(component)
     revision = module.__component_meta__.get('database_revision', None)
     if not isinstance(revision, int):
       msg = 'Component {} defines no or an invalid database_revision.'.format(component)
