@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import React from 'react'
 import {Link, Route} from 'react-router-dom'
 
-export const initCallbacks = []
+export const menu = []
 
 
 const Wrapper = styled.div`
@@ -40,21 +40,14 @@ const Wrapper = styled.div`
 class Dashboard extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {menuLeft: [], menuRight: []}
-    initCallbacks.map(func => func(this))
   }
   render() {
     return <Wrapper className="full height">
       <div className="toc">
         <div className="ui vertical inverted left visible menu sidebar visible">
-          {this.state.menuLeft.map(item => {
+          {menu.map(item => {
             return <Link key={item.url} to={item.url}>{item.text}</Link>
           })}
-          <div className="right menu">
-            {this.state.menuRight.map(item => {
-            return <Link key={item.url} to={item.url}>{item.text}</Link>
-          })}
-          </div>
         </div>
       </div>
       <div className="article">

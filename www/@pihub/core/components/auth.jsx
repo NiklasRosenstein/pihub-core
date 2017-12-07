@@ -1,15 +1,15 @@
+
 import axios from 'axios'
 import styled from 'styled-components'
 import React from 'react'
 import {Link, Route, withRouter} from 'react-router-dom'
 
 import logo from '@pihub/core/logo.png'
+const dashboard = require('@pihub/core/components/dashboard')
 
-require('@pihub/core/components/dashboard').initCallbacks.push((dashboard) => {
-  dashboard.state.menuLeft.push({
-    'url': '/auth/signout',
-    'text': 'Sign Out'
-  })
+dashboard.menu.push({
+  'url': '/auth/signout',
+  'text': 'Sign Out'
 })
 
 const Wrapper = styled.div`
