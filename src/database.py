@@ -11,6 +11,7 @@ import {load_component} from './component'
 import config from './config'
 import utils from './utils'
 
+config.setdefault('sql_debug', False)
 config.setdefault('database', {
   'provider': 'sqlite',
   'filename': os.path.abspath('pihub.sqlite'),
@@ -21,8 +22,7 @@ __component_meta__ = {
   'database_revision': 1
 }
 
-pony.orm.sql_debug(True)
-
+pony.orm.sql_debug(config.sql_debug)
 
 PrimaryKey = utils.reconstructible(pony.orm.core.PrimaryKey)
 Required = utils.reconstructible(pony.orm.core.Required)

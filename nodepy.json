@@ -6,13 +6,13 @@
     "rosensteinniklas@gmail.com"
   ],
   "bin": {
-    "pihub": "./bin/main.py"
+    "pihub": "./src/scripts/cli.py"
   },
   "extensions": [
     "werkzeug-reloader-patch"
   ],
   "dependencies": {
-    "werkzeug-reloader-patch": "git+https://github.com/nodepy/werkzeug-reloader-patch.git@v0.0.6"
+    "werkzeug-reloader-patch": "git+https://github.com/nodepy/werkzeug-reloader-patch.git@v0.0.7"
   },
   "pip_dependencies": {
     "Flask": ">=0.12.2",

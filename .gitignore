@@ -1,2 +1,4 @@
 .nodepy
 build/
+pihub.config.py
+pihub.sqlite
