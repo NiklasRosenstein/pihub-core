@@ -15,7 +15,7 @@ import scheduler from '@pihub/core/components/scheduler'
 config.setdefault('duckdns', {
   'token': None,
   'domains': [],
-  'trigger': {'type': 'cron', 'hour': '*'}
+  'interval': {'type': 'cron', 'hour': '*'}
 })
 
 API_URL = 'https://www.duckdns.org/update?domains={domains}&token={token}'
@@ -23,7 +23,8 @@ API_URL = 'https://www.duckdns.org/update?domains={domains}&token={token}'
 
 def init_component():
   if config.duckdns.get('token') and config.duckdns.get('domains'):
-    scheduler.schedule_job(do_duckdns_update)
+    trigger = scheduler.trigger_from_config(config.duckdns['interval'])
+    scheduler.schedule_job(do_duckdns_update, trigger)
   else:
     # TODO: Logging
     print('duckdns: note: no token or domains configured')

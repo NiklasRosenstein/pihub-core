@@ -37,6 +37,12 @@ def schedule_job(*args, **kwargs):
 def remove_job(*args, **kwargs):
   return scheduler.remove_job(*args, **kwargs)
 
+def trigger_from_config(cfg):
+  trigger_kwargs = cfg.copy()
+  trigger_type = cfg.pop('type', 'interval')
+  trigger_type = {'cron': cron, 'interval': interval}[trigger_type]
+  return trigger_type(**trigger_kwargs)
+
 def init_component():
   scheduler.start()
 
