@@ -58,6 +58,6 @@ class ComponentLoader:
     return [self.load_component(x) for x in components]
 
   def call_if_exists(self, __method_name, *args, **kwargs):
-    for comp in self.components:
+    for name, comp in self.components:
       if hasattr(comp, __method_name):
         getattr(comp, __method_name)(*args, **kwargs)

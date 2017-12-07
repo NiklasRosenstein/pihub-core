@@ -2,13 +2,7 @@
 import axios from 'axios'
 import React from 'react'
 import {Route} from 'react-router-dom'
-const dashboard = require('@pihub/core/components/dashboard')
-
-dashboard.menu.push({
-  'url': '/scheduler',
-  'text': 'Scheduler Overview',
-  'icon': 'browser'
-})
+import dashboard from '@pihub/core/components/dashboard'
 
 class SchedulerComponent extends React.Component {
   constructor(props) {
@@ -51,6 +45,14 @@ class SchedulerComponent extends React.Component {
   }
 }
 
-export const routes = [
-  <Route path="/scheduler" component={SchedulerComponent}/>
-]
+dashboard.menu.push({
+  'url': '/scheduler',
+  'text': 'Scheduler Overview',
+  'icon': 'browser'
+})
+
+export default {
+  routes: [
+    <Route path="/scheduler" component={SchedulerComponent}/>
+  ]
+}

@@ -43,6 +43,10 @@ export class Dashboard extends React.Component {
   }
 }
 
-export const routes = [
-  <Route exact path="/" component={Dashboard}/>
-]
+export default {
+  menu,
+  Dashboard,
+  routes: [
+    <Route exact path="/" component={Dashboard}/>
+  ]
+}

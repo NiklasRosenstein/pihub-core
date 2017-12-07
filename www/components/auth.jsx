@@ -3,14 +3,8 @@ import axios from 'axios'
 import styled from 'styled-components'
 import React from 'react'
 import {Link, Route, withRouter} from 'react-router-dom'
-
 import logo from '@pihub/core/logo.png'
-const dashboard = require('@pihub/core/components/dashboard')
-
-dashboard.menu.push({
-  'url': '/auth/signout',
-  'text': 'Sign Out'
-})
+import dashboard from '@pihub/core/components/dashboard'
 
 const Wrapper = styled.div`
   background-color: #DADADA;
@@ -110,8 +104,14 @@ class AuthSignout extends React.Component {
   }
 }
 
+dashboard.menu.push({
+  'url': '/auth/signout',
+  'text': 'Sign Out'
+})
 
-export const routes = [
-  <Route exact path="/auth/signin" component={withRouter(AuthSignin)}/>,
-  <Route exact path="/auth/signout" component={withRouter(AuthSignout)}/>
-];
+export default {
+  routes: [
+    <Route exact path="/auth/signin" component={withRouter(AuthSignin)}/>,
+    <Route exact path="/auth/signout" component={withRouter(AuthSignout)}/>
+  ]
+}
