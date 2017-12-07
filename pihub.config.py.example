@@ -7,6 +7,8 @@ debug = False
 
 timezone = None
 
+secret_key = '{secret key here}'
+
 components = [
   '@pihub/core/components/dashboard',
   '@pihub/core/components/duckdns',
@@ -22,7 +24,7 @@ database = {
 }
 
 auth = {
-  'password': 'alpine',
+  'password': '{password here}',
   'token_timeout': {'hours': 2}
 }
 

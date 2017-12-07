@@ -35,11 +35,10 @@ __To do__
 
 #### Configuration
 
-Check out the `pihub.config.py.example`, or use it as-is (maybe at least
-change the password and secret key).
+Check out the `pihub.config.py.example`, or generate a new configuration
+via the command-line.
 
-    $ cp .nodepy/modules/@pihub/core/pihub.config.py.example pihub.config.py
-    $ $(EDITOR) pihub.config.py
+    $ pihub gen-config --password 'alpine'
 
 Note that React routes will only be included for components that are
 explicitly defined in the `components` list.
