@@ -6,11 +6,14 @@ import {app as application} from '../app'
 import config from '../config'
 import database from '../database'
 
+# Ensure that all components are loaded.
 config.loader.load_components(config.components)
-database.initialize()
 
-[x.init_component() for x in config.loader.components
-  if hasattr(x, 'init_component')]
+# Connect to the database and bind all delayed entities.
+database.bind()
+
+# Initialize all components.
+config.loader.call_if_exists('init_component')
 
 
 if require.main == module:

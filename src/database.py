@@ -41,7 +41,7 @@ class DelayedEntity(
   performed.
 
   This class employs some magic so it can be used just like the Pony.ORM
-  real entity after #bind_entity() has been called.
+  real entity after #create_database_entity() has been called.
   """
 
   __subclasses = []
@@ -78,64 +78,71 @@ class DelayedEntity(
 
   def __new__(cls, *a, **kw):
     if not cls.__entity:
-      raise RuntimeError('{}.bind_entity() not called'.format(cls.__name__))
+      raise RuntimeError('no real entity bound to {}'.format(cls.__name__))
     return cls.__entity(*a, **kw)
 
   @classmethod
-  def bind_entity(cls, entity_class, temporary=False):
+  def create_database_entity(cls, entity_base, bind=False):
     """
-    Generate a real #db.Entity from this #DelayedEntity. If the real entity
-    has already been created, that entity is returned instead of creating a
-    new class.
-
-    Note that binding the entity non-temporarily will replace all members
-    that represent Pony.ORM attributes (here replaced by #utils.Reconstructible
-    instances) with the actual attributes.
-
-    An entity can be bound multiple times, a #temporary binding will not bind
-    the generated Pony.ORM entity with the #DeclaredEntity subclass.
+    Generate a real Pony ORM entity class from this #DelayedEntity and the
+    *entity_base* base class. If *bind* is #True, the created class will be
+    bound to the #DelayedEntity subclass.
     """
 
     if cls is DelayedEntity:
-      msg = 'DelayedEntity.bind_entity() must be called on a subclass.'
+      msg = 'DelayedEntity.create_database_entity() must be called on a subclass.'
       raise RuntimeError(msg)
 
-    if not temporary and cls.__entity:
+    if bind and cls.__entity:
       return cls.__entity
 
     data = vars(cls).copy()
     for key, value in cls.__reconstructibles.items():
       data[key] = value = value.reconstruct()
-      if not temporary:
+      if bind:
         setattr(cls, key, value)
 
     bases = []
     for base in cls.__bases__:
       if issubclass(base, DelayedEntity) and base is not DelayedEntity:
-        bases.append(base.bind_entity(entity_class, temporary))
+        base_entity = base.__entity
+        if not base_entity:
+          base_entity = base.create_database_entity(entity_base, bind=bind)
+        bases.append(base_entity)
     if not bases:
-      bases.append(entity_class)
+      bases.append(entity_base)
 
     entity = type(cls.__name__, tuple(bases), data)
+    entity.__name__ += '_Entity'
+    entity.__qualname__ += '_Entity'
 
-    # Replace references to `cls` in function closures with the entity class.
-    # This is to allow #super() to function correctly in the created Entity.
+    # Update the closures in functions and methods that reference the
+    # DelayedEntity subclass to instead reference the new entity class.
     for key in data.keys():
       value = getattr(entity, key)
-      if not isinstance(value, types.FunctionType) or not value.__closure__:
-        continue
-      try:
-        closure = utils.closure_replace_cell_contents(value.__closure__, cls, entity)
-      except ValueError:
-        # The closure does not contain a reference to `cls`.
-        pass
-      else:
-        value = utils.copy_function(value, closure=closure)
-        setattr(entity, key, value)
+      if isinstance(value, types.MethodType):
+        try:
+          func = utils.rebind_function_closure(value.__func__, cls, entity)
+        except ValueError:  # cls does not appear in closure of function
+          pass
+        else:
+          value = types.MethodType(func, value.__self__)
+          setattr(entity, key, value)
+      elif isinstance(value, types.FunctionType):
+        try:
+          value = utils.rebind_function_closure(value, cls, entity)
+        except ValueError:  # cls does not appear in closure of function
+          pass
+        else:
+          setattr(entity, key, value)
 
-    if not temporary:
+    if bind:
       cls.__entity = entity
     return entity
+
+  @classmethod
+  def delayed_entity_subclasses(cls):
+    return cls.__subclasses
 
 
 class InstalledComponent(DelayedEntity):
@@ -150,66 +157,68 @@ class InstalledComponent(DelayedEntity):
   component = PrimaryKey(str)
   revision = Required(int)
 
+  @classmethod
+  def set_revision(cls, component, revision):
+    have = cls.get(component=component)
+    if have:
+      have.revision = revision
+    else:
+      cls(component=component, revision=revision)
 
-def do_component_migration():
-  """
-  Performs the migration of loaded components and those the defined entities.
-  This will create a new Pony #Database object that will bind to the
-  configured database and perform the migration.
-  """
 
+def temporary_binding():
   db = Database()
   db.bind(**config.database)
-  InstalledComponentEntity = InstalledComponent.bind_entity(db.Entity, temporary=True)
+  InstalledComponentEntity = InstalledComponent.create_database_entity(db.Entity)
   db.generate_mapping(create_tables=True)
-
-  # Get a unique list of components that use the database connection (ordered).
-  components = []
-  for entity in DelayedEntity._DelayedEntity__subclasses:
-    if entity.__module__ not in components:
-      components.append(entity.__module__)
-
-  print('Found {} component{} with declared entities.'.format(
-      len(components), 's' if len(components) != 1 else ''))
-  print('Running migrations.')
-
-  def error(msg):
-    print(msg, 'ERROR')
-    raise RuntimeError(msg)
-
-  def migrate_comp(comp):
-    module = config.loader.load_component(component)
-    revision = module.__component_meta__.get('database_revision', None)
-    if not isinstance(revision, int):
-      msg = 'Component {} defines no or an invalid database_revision.'.format(component)
-      error(msg)
-
-    have = InstalledComponentEntity.get(component=component)
-    if not have:
-      print('  NEW {}'.format(component))
-      have = InstalledComponentEntity(component=component, revision=revision)
-    else:
-      if have.revision != revision:
-        print('  UPGRADE {} ({} -> {})'.format(component, have.revision, revision))
-        if not hasattr(module, 'do_migration'):
-          error('Component {} defines no do_migration().'.format(component))
-        raise NotImplementedError('MIGRATION NOT IMPLEMENTED')  # TODO
-        have.revision = revision
-
-  with session:
-    for component in components:
-      migrate_comp(component)
-
-  print('Migration complete.')
+  return db, InstalledComponentEntity
 
 
-def initialize():
-  print('Initializing database connection.')
+def database_components():
+  """
+  Generator that returns a tuple of `(name, component)` for every component
+  that uses the database.
+  """
+
+  seen = set()
+  for entity in DelayedEntity.delayed_entity_subclasses():
+    name = entity.__module__
+    if name not in seen:
+      seen.add(name)
+      yield name, config.loader.get_component(name)
+
+
+def component_revisions(InstalledComponent=InstalledComponent):
+  """
+  Yields `(name, component, have_revision, curr_revision)` for all currently
+  and previously installed components.
+  """
+
+  result = []
+  checked = set()
+
+  config.loader.load_components(config.components)
+  for name, component in database_components():
+    checked.add(name)
+    curr_revision = component.__component_meta__['database_revision']
+    have = InstalledComponent.get(component=name)
+    have_revision = have.revision if have else None
+    yield (name, component, have_revision, curr_revision)
+  for have in InstalledComponent.select():
+    if have.component not in checked:
+      yield (have.component, None, have.revision, None)
+
+
+def bind():
+  """
+  Binds the global Pony database *db* to a provider from the database
+  configuration and permanently binds all real entities for this database
+  to the #DelayedEntity subclasses.
+  """
+
   db.bind(**config.database)
-  entities = DelayedEntity._DelayedEntity__subclasses
-  print('Binding {} entities to database.'.format(len(entities)))
-  for entity in entities:
-    entity.bind_entity(db.Entity)
+  for cls in DelayedEntity.delayed_entity_subclasses():
+    cls.create_database_entity(db.Entity, bind=True)
   db.generate_mapping(create_tables=True)
 
 

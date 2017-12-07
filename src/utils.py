@@ -15,16 +15,16 @@ def make_cell(val=None):
   return closure.__closure__[0]
 
 
-def closure_replace_cell_contents(closure, old, new):
+def closure_replace_cell(closure, old_value, new_value):
   """
   Returns a new closure (a tuple of cells) that replaced *old* with *new*.
   If *old* does not occurr in the closure, a #ValueError is raised.
   """
 
   for i, cell in enumerate(closure):
-    if cell.cell_contents == old:
-      return closure[:i] + (make_cell(new),) + closure[i+1:]
-  raise ValueError('closure does not contain value {!r}'.format(old))
+    if cell.cell_contents == old_value:
+      return closure[:i] + (make_cell(new_value),) + closure[i+1:]
+  raise ValueError('closure does not contain value {!r}'.format(old_value))
 
 
 def copy_function(f, code=None, globals=None, name=None, argdefs=None, closure=None):
@@ -43,6 +43,18 @@ def copy_function(f, code=None, globals=None, name=None, argdefs=None, closure=N
   g = functools.update_wrapper(g, f)
   g.__kwdefaults__ = f.__kwdefaults__
   return g
+
+
+def rebind_function_closure(func, old_value, new_value):
+  """
+  Replaces *old_value* in the closure of *func* with *new_value*. If the
+  function's closure does not contain *old_value*, a #ValueError is raised.
+  """
+
+  if not func.__closure__:
+    raise ValueError('function has no closure')
+  closure = closure_replace_cell(func.__closure__, old_value, new_value)
+  return copy_function(func, closure=closure)
 
 
 class Reconstructible:

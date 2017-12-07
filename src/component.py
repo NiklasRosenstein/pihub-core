@@ -30,6 +30,12 @@ class ComponentLoader:
   def components(self):
     return (x.namespace for x in self.component_modules.values())
 
+  def get_component(self, name, get_namespace=True):
+    module = self.component_modules[name]
+    if get_namespace:
+      return module.namespace
+    return module
+
   def load_component(self, name, get_namespace=True):
     if name in self.component_modules:
       module = self.component_modules[name]
@@ -43,6 +49,7 @@ class ComponentLoader:
             'it is not a dictionary.'.format(name))
       for dependency in module.namespace.__component_meta__.get('requires', []):
         self.load_component(dependency)
+      module.namespace.__component_meta__['name'] = name
       self.component_modules[name] = module
     if get_namespace:
       return module.namespace
@@ -50,3 +57,8 @@ class ComponentLoader:
 
   def load_components(self, components):
     return [self.load_component(x) for x in components]
+
+  def call_if_exists(self, __method_name, *args, **kwargs):
+    for comp in self.components:
+      if hasattr(comp, __method_name):
+        getattr(comp, __method_name)(*args, **kwargs)

@@ -10,6 +10,7 @@ import uuid
 import {app, config, database} from '@pihub/core'
 
 __component_meta__ = {
+  'requires': ['@pihub/core/database'],
   'database_revision': 1
 }
 
